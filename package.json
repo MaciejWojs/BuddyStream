@@ -1,7 +1,9 @@
 {
   "name": "backend",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "format": "bun fmt",
+    "format:check": "bun fmt --check"
   },
   "dependencies": {
     "hono": "^4.13.13"
