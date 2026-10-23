@@ -14,6 +14,18 @@
       }
     },
     {
+      "label": "run compose infrastructure local mock",
+      "command": "docker compose -f infra-local-mock/docker-compose.yaml up -d",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
       "label": "Run backend server",
       "type": "shell",
       "command": "bun run dev",
