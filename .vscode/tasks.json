@@ -1,25 +1,31 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build backend docker image",
-            "command": "docker build -t ${input:backend-image-name} .",
-            "type": "shell",
-            "presentation": {
-                "reveal": "always"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-        }
-    ],
-    "inputs": [
-        {
-            "id": "backend-image-name",
-            "type": "promptString",
-            "default": "backend-image",
-            "description": "Enter the name of the backend image",
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build backend docker image",
+      "command": "docker build -t ${input:backend-image-name} .",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run backend server",
+      "type": "shell",
+      "command": "bun run dev",
+      "problemMatcher": ["$tsc"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "backend-image-name",
+      "type": "promptString",
+      "default": "backend-image",
+      "description": "Enter the name of the backend image"
+    }
+  ]
 }
