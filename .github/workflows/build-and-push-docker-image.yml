@@ -1,4 +1,4 @@
-name: Publish stream-buddy-backend Docker image to GHCR
+name: Publish buddy-stream-backend Docker image to GHCR
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 env:
-  IMAGE_NAME: stream-buddy-backend
+  IMAGE_NAME: buddy-stream-backend
 
 jobs:
   verify:
