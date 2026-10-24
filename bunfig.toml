@@ -3,3 +3,5 @@ sortImports = true
 jsdoc = true
 singleQuote = true
 trailingComma = "none"
+sortPackageJson = true
+printWidth = 120
