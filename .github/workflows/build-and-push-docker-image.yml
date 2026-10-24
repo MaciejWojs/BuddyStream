@@ -9,11 +9,11 @@ env:
   IMAGE_NAME: stream-buddy-backend
 
 jobs:
-  check:
+  verify:
     uses: ./.github/workflows/check.yaml
   push:
     runs-on: ubuntu-latest
-    needs: check
+    needs: verify
     outputs:
       image_url: ${{ steps.set_var.outputs.image_url }}
     permissions:
