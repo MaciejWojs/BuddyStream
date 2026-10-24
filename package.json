@@ -30,7 +30,8 @@
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "bun check"
+      "bun check",
+      "eslint --fix"
     ]
   }
 }
