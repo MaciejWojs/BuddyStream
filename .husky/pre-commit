@@ -1,2 +1,2 @@
-
+lint-staged
 bun fmt --staged
