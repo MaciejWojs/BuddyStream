@@ -1,4 +1,4 @@
-name: infra-local-mock
+name: infra-local-emulator
 
 services:
   floci:

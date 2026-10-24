@@ -14,8 +14,11 @@
       }
     },
     {
-      "label": "run compose infrastructure local mock",
-      "command": "docker compose -f infra-local-mock/docker-compose.yaml up -d",
+      "label": "run infrastructure emulator",
+      "options": {
+        "cwd": "${workspaceFolder}/infra-local-emulator"
+      },
+      "command": "docker compose up -d",
       "type": "shell",
       "presentation": {
         "reveal": "always"
