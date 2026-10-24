@@ -24,7 +24,6 @@
     "drizzle-seed": "1.0.0-rc.5",
     "eslint": "^10.13.0",
     "eslint-plugin-perfectionist": "^5.13.0",
-    "eslint-plugin-simple-import-sort": "^14.0.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
