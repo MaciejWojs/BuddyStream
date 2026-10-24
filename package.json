@@ -8,6 +8,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "drizzle-kit": "1.0.0-rc.5",
+    "drizzle-orm": "1.0.0-rc.5",
     "hono": "^4.13.13"
   },
   "devDependencies": {
