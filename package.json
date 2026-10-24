@@ -5,7 +5,9 @@
     "format": "bun fmt",
     "format:check": "bun fmt --check",
     "typecheck": "bun check",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@eslint/js": "^10.0.1",
@@ -31,7 +33,7 @@
   "lint-staged": {
     "*.{js,ts}": [
       "bun check",
-      "eslint --fix"
+      "bun lint:fix"
     ]
   }
 }
