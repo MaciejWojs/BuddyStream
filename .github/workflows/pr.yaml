@@ -1,0 +1,8 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pr:
+    uses: ./.github/workflows/check.yaml

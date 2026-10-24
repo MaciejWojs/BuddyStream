@@ -1,0 +1,8 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  main:
+    uses: ./.github/workflows/check.yaml
