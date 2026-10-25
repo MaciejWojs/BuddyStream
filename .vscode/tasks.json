@@ -33,6 +33,16 @@
       "type": "shell",
       "command": "bun run dev",
       "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Lint backend code",
+      "type": "shell",
+      "command": "bun run lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ],
   "inputs": [
