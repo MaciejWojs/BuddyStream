@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "build backend docker image",
-      "command": "docker build -t ${input:backend-image-name} .",
+      "command": "docker build -t buddy-stream-backend .",
       "type": "shell",
       "presentation": {
         "reveal": "always"
@@ -43,14 +43,6 @@
         "kind": "build",
         "isDefault": true
       }
-    }
-  ],
-  "inputs": [
-    {
-      "id": "backend-image-name",
-      "type": "promptString",
-      "default": "backend-image",
-      "description": "Enter the name of the backend image"
     }
   ]
 }
