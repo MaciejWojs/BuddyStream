@@ -9,9 +9,9 @@ export const followers = pgTable(
   {
     id: uuidv7().primaryKey(),
     // user who is following
-    follower_id: uuid().references(() => users.id),
+    follower_id: uuid().references(() => users.id, { onDelete: 'cascade' }),
     // user who is being followed
-    followee_id: uuid().references(() => users.id),
+    followee_id: uuid().references(() => users.id, { onDelete: 'cascade' }),
     ...timestamps
   },
 
