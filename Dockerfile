@@ -13,7 +13,7 @@ FROM docker.io/oven/bun:1.4.4-alpine
 RUN addgroup -S backend-group && \
 adduser -S -D -H -G backend-group backend-user
 
-COPY --chown=backend-user:backend-group --from=docker.io/arigaio/atlas:1.2.3-distroless /atlas /usr/local/bin/atlas
+COPY --chown=backend-user:backend-group --from=docker.io/arigaio/atlas:1.3.0-distroless /atlas /usr/local/bin/atlas
 
 WORKDIR /backend
 
