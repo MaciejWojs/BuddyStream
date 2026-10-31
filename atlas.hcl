@@ -8,7 +8,7 @@ data "external_schema" "drizzle" {
 }
 
 env "local" {
-  dev = "docker://postgres/18/dev?search_path=public"
+  dev = "docker://postgres/18.6-alpine/dev?search_path=public"
   schema {
     src = data.external_schema.drizzle.url
   }
