@@ -4,11 +4,12 @@ import { APP_CONFIG } from '@/config/APP_CONFIG';
 
 import { timestamps, uuidv7 } from './utilities';
 
-const MAX_USERNAME_LENGTH = APP_CONFIG.database.limits.users.max_username_length;
-const MAX_EMAIL_LENGTH = APP_CONFIG.database.limits.users.max_email_length;
-const MAX_HASH_LENGTH = APP_CONFIG.database.limits.shared.max_hash_length;
-const MAX_PLACEHOLDER_LENGTH = APP_CONFIG.database.limits.shared.max_placeholder_length;
-const MAX_ASSETS_KEY_LENGTH = APP_CONFIG.database.limits.shared.max_assets_key_length;
+const dbLimits = APP_CONFIG.database.limits;
+const MAX_USERNAME_LENGTH = dbLimits.users.max_username_length;
+const MAX_EMAIL_LENGTH = dbLimits.users.max_email_length;
+const MAX_HASH_LENGTH = dbLimits.shared.max_hash_length;
+const MAX_PLACEHOLDER_LENGTH = dbLimits.shared.max_placeholder_length;
+const MAX_ASSETS_KEY_LENGTH = dbLimits.shared.max_assets_key_length;
 
 export const users = pgTable('users', {
   id: uuidv7().primaryKey(),
