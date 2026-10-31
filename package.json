@@ -7,6 +7,7 @@
     "format:check": "bun fmt --check",
     "typecheck": "bun check",
     "prepare": "husky",
+    "db-diff": "mise exec -- atlas migrate diff --env local",
     "lint": "eslint ",
     "lint:fix": "eslint --fix"
   },
