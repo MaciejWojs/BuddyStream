@@ -5,7 +5,9 @@ import { timestamps, uuidv7 } from '../../utilities';
 
 export const channels = pgTable('channels', {
   id: uuidv7().primaryKey(),
-  owner_id: uuid().references(() => users.id),
+  owner_id: uuid()
+    .notNull()
+    .references(() => users.id),
   ivs_arn: varchar({ length: 255 }),
   ingest_endpoint: varchar({ length: 255 }),
   playback_url: varchar({ length: 255 }),

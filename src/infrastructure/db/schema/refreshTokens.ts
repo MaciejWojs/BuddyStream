@@ -10,7 +10,9 @@ const MAX_TOKEN_HASH_LENGTH = APP_CONFIG.database.limits.max_token_hash_length;
 
 export const refreshTokens = pgTable('refresh_tokens', {
   id: uuidv7().primaryKey(),
-  user_id: uuid().references(() => users.id),
+  user_id: uuid()
+    .notNull()
+    .references(() => users.id),
   token_hash: varchar({ length: MAX_TOKEN_HASH_LENGTH }).notNull().unique(),
   revoked_at: timestamp(),
   expires_at: timestamp()

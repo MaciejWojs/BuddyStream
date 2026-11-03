@@ -10,8 +10,12 @@ const MAX_MESSAGE_BODY_LENGTH = APP_CONFIG.database.limits.max_message_body_leng
 
 export const chatMessageEdits = pgTable('chat_message_edits', {
   id: uuidv7().primaryKey(),
-  message_id: uuid().references(() => chat.id, { onDelete: 'cascade' }),
+  message_id: uuid()
+    .notNull()
+    .references(() => chat.id, { onDelete: 'cascade' }),
   previous_body: varchar({ length: MAX_MESSAGE_BODY_LENGTH }).notNull(),
-  user_id: uuid().references(() => users.id),
+  user_id: uuid()
+    .notNull()
+    .references(() => users.id),
   ...timestamps
 });

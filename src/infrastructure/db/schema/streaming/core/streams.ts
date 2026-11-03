@@ -18,7 +18,9 @@ export const streamRecordingStatus = pgEnum('stream_recording_status', [
 
 export const streams = pgTable('streams', {
   id: uuidv7().primaryKey(),
-  channel_id: uuid().references(() => channels.id),
+  channel_id: uuid()
+    .notNull()
+    .references(() => channels.id),
   title: varchar({ length: 255 }).default('Untitled Stream').notNull(),
   description: varchar({ length: 255 }).default('Default stream description').notNull(),
   thumbnail_key: varchar({ length: MAX_ASSETS_KEY_LENGTH }),
