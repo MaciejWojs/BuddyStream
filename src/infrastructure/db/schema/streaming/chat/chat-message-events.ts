@@ -1,4 +1,4 @@
-import { jsonb, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, uuid } from 'drizzle-orm/pg-core';
 
 import { users } from '../../users';
 import { timestamps, uuidv7 } from '../../utilities';
@@ -12,7 +12,6 @@ export const chatMessageEvents = pgTable('chat_message_events', {
   actor_id: uuid()
     .notNull()
     .references(() => users.id, { onDelete: 'restrict' }),
-  event_type: varchar({ length: 255 }).notNull(),
   payload: jsonb().notNull(),
   ...timestamps
 });

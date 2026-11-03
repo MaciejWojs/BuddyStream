@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, text, uuid, varchar } from 'drizzle-orm/pg-core';
+import { bigint, pgEnum, pgTable, text, uuid, varchar } from 'drizzle-orm/pg-core';
 
 import { APP_CONFIG } from '@/config/APP_CONFIG';
 
@@ -23,6 +23,7 @@ export const streams = pgTable('streams', {
   description: varchar({ length: 255 }).default('Default stream description').notNull(),
   thumbnail_key: varchar({ length: MAX_ASSETS_KEY_LENGTH }),
   thumbnail_placeholder: text(),
+  likes_count: bigint({ mode: 'number' }),
   recording_status: streamRecordingStatus(),
   ...timestamps
 });
