@@ -11,13 +11,13 @@ export const streamerUserRoles = pgTable(
     id: uuidv7().primaryKey(),
     streamer_id: uuid()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: 'cascade' }),
     user_id: uuid()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: 'cascade' }),
     streamer_role_id: uuid()
       .notNull()
-      .references(() => streamerRoles.id),
+      .references(() => streamerRoles.id, { onDelete: 'restrict' }),
     ...timestamps
   },
   (table) => [

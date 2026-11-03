@@ -10,10 +10,10 @@ export const globalUserRoles = pgTable(
     id: uuidv7().primaryKey(),
     user_id: uuid()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: 'cascade' }),
     global_role_id: uuid()
       .notNull()
-      .references(() => globalRoles.id),
+      .references(() => globalRoles.id, { onDelete: 'restrict' }),
     ...timestamps
   },
   (table) => [unique('global_user_roles_unique').on(table.user_id, table.global_role_id)]
