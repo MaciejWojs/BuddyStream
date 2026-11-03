@@ -12,10 +12,10 @@ export const refreshTokens = pgTable('refresh_tokens', {
   id: uuidv7().primaryKey(),
   user_id: uuid()
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: 'cascade' }),
   token_hash: varchar({ length: MAX_TOKEN_HASH_LENGTH }).notNull().unique(),
-  revoked_at: timestamp(),
-  expires_at: timestamp()
+  revoked_at: timestamp({ withTimezone: true }),
+  expires_at: timestamp({ withTimezone: true })
     .notNull()
     .default(sql`now() + interval '7 day'`),
   ...timestamps
