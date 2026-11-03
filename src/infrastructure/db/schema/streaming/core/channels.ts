@@ -7,7 +7,7 @@ export const channels = pgTable('channels', {
   id: uuidv7().primaryKey(),
   owner_id: uuid()
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: 'restrict' }),
   ivs_arn: varchar({ length: 255 }),
   ingest_endpoint: varchar({ length: 255 }),
   playback_url: varchar({ length: 255 }),
