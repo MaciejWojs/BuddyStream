@@ -1,4 +1,4 @@
-import { pgTable, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar } from 'drizzle-orm/pg-core';
 
 import { APP_CONFIG } from '@/config/APP_CONFIG';
 
@@ -8,7 +8,6 @@ const dbLimits = APP_CONFIG.database.limits;
 const MAX_USERNAME_LENGTH = dbLimits.users.max_username_length;
 const MAX_EMAIL_LENGTH = dbLimits.users.max_email_length;
 const MAX_HASH_LENGTH = dbLimits.shared.max_hash_length;
-const MAX_PLACEHOLDER_LENGTH = dbLimits.shared.max_placeholder_length;
 const MAX_ASSETS_KEY_LENGTH = dbLimits.shared.max_assets_key_length;
 
 export const users = pgTable('users', {
@@ -17,6 +16,6 @@ export const users = pgTable('users', {
   email: varchar({ length: MAX_EMAIL_LENGTH }).notNull().unique(),
   password_hash: varchar({ length: MAX_HASH_LENGTH }).notNull(),
   avatar_key: varchar({ length: MAX_ASSETS_KEY_LENGTH }),
-  avatar_placeholder: varchar({ length: MAX_PLACEHOLDER_LENGTH }),
+  avatar_placeholder: text(),
   ...timestamps
 });

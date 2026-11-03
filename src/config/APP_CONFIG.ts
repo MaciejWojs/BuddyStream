@@ -16,7 +16,6 @@ export const APP_CONFIG = {
       },
       shared: {
         max_hash_length: 100,
-        max_placeholder_length: 100,
         max_assets_key_length: 100
       },
       max_message_body_length: 500,
