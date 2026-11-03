@@ -8,13 +8,13 @@ export const globalRolePermissions = pgTable(
   'global_role_permissions',
   {
     id: uuidv7().primaryKey(),
-    role_id: uuid()
+    global_role_id: uuid()
       .notNull()
-      .references(() => globalRoles.id),
+      .references(() => globalRoles.id, { onDelete: 'cascade' }),
     permission_id: uuid()
       .notNull()
-      .references(() => permissions.id),
+      .references(() => permissions.id, { onDelete: 'cascade' }),
     ...timestamps
   },
-  (table) => [unique('global_role_permissions_unique').on(table.role_id, table.permission_id)]
+  (table) => [unique('global_role_permissions_unique').on(table.global_role_id, table.permission_id)]
 );

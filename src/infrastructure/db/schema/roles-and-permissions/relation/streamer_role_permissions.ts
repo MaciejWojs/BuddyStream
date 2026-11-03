@@ -10,10 +10,10 @@ export const streamerRolePermissions = pgTable(
     id: uuidv7().primaryKey(),
     streamer_role_id: uuid()
       .notNull()
-      .references(() => streamerRoles.id),
+      .references(() => streamerRoles.id, { onDelete: 'cascade' }),
     permission_id: uuid()
       .notNull()
-      .references(() => permissions.id),
+      .references(() => permissions.id, { onDelete: 'cascade' }),
     ...timestamps
   },
 
