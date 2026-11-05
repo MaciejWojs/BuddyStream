@@ -1,5 +1,7 @@
 *
 !src/**/*.ts
+src/**/*.test.ts
+src/**/*.test.tsx
 !bun.lock
 !package.json
 !tsconfig.json
