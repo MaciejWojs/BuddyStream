@@ -7,10 +7,12 @@ const emailSchema = z.email().max(MAX_EMAIL_LENGTH);
 
 export class Email {
   constructor(private readonly email: string) {
-    const res = emailSchema.validate(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const res = emailSchema.validate(normalizedEmail);
     if (!res) {
       throw new Error('Invalid email');
     }
+    this.email = normalizedEmail;
   }
 
   get value(): string {
