@@ -3,7 +3,7 @@ import 'zod/compile';
 import { z } from 'zod';
 
 export class BaseUUID {
-  constructor(private id: string = randomUUIDv7()) {
+  constructor(private readonly id: string = randomUUIDv7()) {
     const res = z.uuid();
     if (!res.validate(id)) {
       throw new Error('Invalid UUID');
