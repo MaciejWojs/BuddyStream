@@ -3,5 +3,6 @@
 src/**/*.test.ts
 src/**/*.test.tsx
 !bun.lock
+!bunfig.toml
 !package.json
 !tsconfig.json
