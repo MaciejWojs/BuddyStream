@@ -25,6 +25,7 @@
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/bun": "latest",
+    "@types/zxcvbn": "^4.4.5",
     "drizzle-seed": "1.0.0-rc.5",
     "eslint": "^10.14.0",
     "eslint-plugin-perfectionist": "^5.13.0",
