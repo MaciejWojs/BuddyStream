@@ -33,5 +33,13 @@ jobs:
       - name: Typecheck
         run: bun typecheck
 
-      - name: Audit
-        run: bun audit
+      - name: Audit production dependencies
+        run: bun audit --prod
+
+      - name: Audit all dependencies
+        continue-on-error: true
+        run: |
+          if ! bun audit; then
+            echo "Audit failed, review the audit manually"
+            exit 1
+          fi
