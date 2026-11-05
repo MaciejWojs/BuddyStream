@@ -1,2 +1,6 @@
 lint-staged
 bun fmt --staged
+
+if ! bun audit; then
+    echo "Audit failed, review the audit manually"
+fi
