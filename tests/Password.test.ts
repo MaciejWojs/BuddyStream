@@ -37,4 +37,11 @@ describe('Password', () => {
       await expect(Password.create(invalidPassword)).rejects.toThrow('Invalid password');
     });
   });
+
+  describe('strength', () => {
+    it('Password strength should be met', async () => {
+      const invalidPassword = 'a'.repeat(MIN_PASSWORD_LENGTH);
+      await expect(Password.create(invalidPassword)).rejects.toThrow('Password is not strong enough');
+    });
+  });
 });
