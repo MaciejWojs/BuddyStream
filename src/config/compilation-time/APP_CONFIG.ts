@@ -6,6 +6,9 @@ export const APP_CONFIG = defineConfig({
     appVersion: 'v0.1.0',
     appDescription: 'Buddy Stream Backend for video streaming platform'
   },
+  security: {
+    hash_algorithm: 'argon2id'
+  },
   database: {
     limits: {
       roles: {
@@ -33,7 +36,10 @@ export const APP_CONFIG = defineConfig({
   domain: {
     limits: {
       users: {
-        min_username_length: 3
+        min_username_length: 3,
+        min_password_length: 14,
+        max_password_length: 64,
+        min_password_strength: 3
       }
     }
   }
