@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { APP_CONFIG } from '@/config/APP_CONFIG';
+import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
 const MIN_USERNAME_LENGTH = APP_CONFIG.domain.limits.users.min_username_length;
 const MAX_USERNAME_LENGTH = APP_CONFIG.database.limits.users.max_username_length;

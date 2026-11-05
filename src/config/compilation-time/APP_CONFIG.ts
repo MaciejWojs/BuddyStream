@@ -1,4 +1,11 @@
-export const APP_CONFIG = {
+import { defineConfig } from './defineConfig';
+
+export const APP_CONFIG = defineConfig({
+  core: {
+    appName: 'buddy-stream-backend',
+    appVersion: 'v0.1.0',
+    appDescription: 'Buddy Stream Backend for video streaming platform'
+  },
   database: {
     limits: {
       roles: {
@@ -30,4 +37,4 @@ export const APP_CONFIG = {
       }
     }
   }
-} as const;
+});

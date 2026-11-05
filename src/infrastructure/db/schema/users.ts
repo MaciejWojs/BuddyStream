@@ -1,6 +1,6 @@
 import { pgTable, text, varchar } from 'drizzle-orm/pg-core';
 
-import { APP_CONFIG } from '@/config/APP_CONFIG';
+import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
 import { timestamps, uuidv7 } from './utilities';
 

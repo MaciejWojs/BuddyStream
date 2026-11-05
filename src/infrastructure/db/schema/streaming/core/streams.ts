@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { bigint, integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from 'drizzle-orm/pg-core';
 
-import { APP_CONFIG } from '@/config/APP_CONFIG';
+import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
 import { timestamps, uuidv7 } from '../../utilities';
 import { channels } from './channels';
