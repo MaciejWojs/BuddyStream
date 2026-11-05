@@ -1,0 +1,46 @@
+---
+description: Zod 4 — kompiluj schematy i używaj validate tam, gdzie wynik parse nie jest potrzebny
+globs: "**/*.ts"
+alwaysApply: false
+---
+
+# Zod compile i validate
+
+Projekt ma `zod` 4.6+. Przy nowym kodzie i przy edycji istniejącego użycia Zod stosuj `zod/compile` oraz `.validate()` tam, gdzie poniżej. Nie ruszaj wywołań, które potrzebują sparsowanej wartości albo treści błędu.
+
+## Kompilacja
+
+Jeden wczesny punkt włączenia, nie import w każdym pliku ze schematem:
+
+```toml
+# bunfig.toml
+preload = ["zod/compile"]
+```
+
+`import 'zod/compile'` tylko wtedy, gdy preloadu nie ma. Musi wykonać się zanim jakikolwiek moduł zbuduje schemat. Skompilowany schemat działa jak zwykły (`parse`, `safeParse`, `validate`).
+
+`z.compile(schema)` dla schematu wołanego wielokrotnie (obiekt, tablica, unia — zysk rzędu kilku razy). Schemat twórz raz na poziomie modułu i trzymaj wynik kompilacji.
+
+```typescript
+const usernameSchema = z.compile(
+  z.string().min(MIN_USERNAME_LENGTH).max(MAX_USERNAME_LENGTH)
+);
+```
+
+Pomiń kompilację, gdy schemat powstaje przy każdym wywołaniu, jest jednorazowym skalarem albo idzie wyłącznie do generowania OpenAPI i sam framework woła parse.
+
+`z.compile` używa `new Function`. Przy CSP, które to blokuje, parser podstawia się przez `z.withParser`, nie przez wyłączenie walidacji.
+
+## validate
+
+`.validate()` / `z.validate(schema, input)` gdy liczy się tylko poprawność albo zawężenie typu wejścia. Na skompilowanym schemacie odrzucenie jest dużo tańsze niż `.safeParse().success`, bo nie składa `ZodError`.
+
+```typescript
+if (!usernameSchema.validate(username)) {
+  throw new Error('Invalid username');
+}
+```
+
+Zostaw `.parse()` / `.safeParse()`, gdy kod czyta `.data`, `.error`, ścieżki issues albo komunikat. `.validate()` jest guardem typu wejściowego i nie zwraca wartości po transformacji, defaultach ani obcięciu nieznanych kluczy. Refinement asynchroniczny: `.validateAsync()`.
+
+Granicy Hono / `@hono/zod-openapi` nie zamieniaj na `validate`.

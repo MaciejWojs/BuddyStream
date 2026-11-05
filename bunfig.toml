@@ -1,3 +1,4 @@
+preload = ["zod/compile"]
 [fmt]
 sortImports = true
 jsdoc = true
