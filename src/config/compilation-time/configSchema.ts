@@ -4,10 +4,12 @@ import { z } from 'zod';
 import { coreSchema } from './partial/core';
 import { databaseLimitsSchema } from './partial/database-limits';
 import { domainLimitsSchema } from './partial/domain-limits';
+import { securitySchema } from './partial/security';
 
 export const configSchema = z
   .strictObject({
     core: coreSchema,
+    security: securitySchema,
     database: z.strictObject({
       limits: databaseLimitsSchema
     }),
