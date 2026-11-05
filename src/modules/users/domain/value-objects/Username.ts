@@ -9,8 +9,8 @@ const usernameSchema = z.string().min(MIN_USERNAME_LENGTH).max(MAX_USERNAME_LENG
 
 export class Username {
   constructor(private username: string) {
-    const res = usernameSchema.safeParse(username);
-    if (!res.success) {
+    const res = usernameSchema.validate(username);
+    if (!res) {
       throw new Error('Invalid username');
     }
     if (/\s/.test(username)) {
