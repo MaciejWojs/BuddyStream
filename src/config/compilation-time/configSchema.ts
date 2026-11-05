@@ -13,9 +13,7 @@ export const configSchema = z
     database: z.strictObject({
       limits: databaseLimitsSchema
     }),
-    domain: z.strictObject({
-      limits: domainLimitsSchema
-    })
+    domain: domainLimitsSchema
   })
   .superRefine((config, ctx) => {
     const minUsername = config.domain.limits.users.min_username_length;

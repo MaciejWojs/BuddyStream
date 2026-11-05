@@ -34,6 +34,7 @@ export const APP_CONFIG = defineConfig({
   },
 
   domain: {
+    force_uuid_v7: true,
     limits: {
       users: {
         min_username_length: 3,
