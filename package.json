@@ -15,7 +15,7 @@
   "dependencies": {
     "@eslint/js": "^10.0.1",
     "@hono/zod-openapi": "^1.6.3",
-    "@scalar/hono-api-reference": "^0.12.17",
+    "@scalar/hono-api-reference": "^0.12.18",
     "@stylistic/eslint-plugin": "^5.10.0",
     "drizzle-kit": "1.0.0-rc.5",
     "drizzle-orm": "1.0.0-rc.5",
