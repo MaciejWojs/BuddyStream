@@ -11,6 +11,10 @@ export const domainLimitsSchema = z.strictObject({
       min_password_length: positiveInt,
       max_password_length: positiveInt,
       min_password_strength: z.int().min(0).max(4)
+    }),
+    roles: z.strictObject({
+      min_name_length: positiveInt,
+      min_code_length: positiveInt
     })
   })
 });

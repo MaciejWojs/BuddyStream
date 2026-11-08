@@ -41,6 +41,10 @@ export const APP_CONFIG = defineConfig({
         min_password_length: 14,
         max_password_length: 64,
         min_password_strength: 3
+      },
+      roles: {
+        min_name_length: 4,
+        min_code_length: 6
       }
     }
   }
