@@ -5,8 +5,8 @@ COPY package.json bun.lock ./
 RUN bun pm fetch
 
 COPY . .
-RUN bun install --offline --frozen-lockfile --ignore-scripts --production
-RUN bun build --check src/ --compile --outfile app --target bun
+RUN bun install --offline --frozen-lockfile --ignore-scripts
+RUN bun build --check src/ --compile --bytecode --no-compile-autoload-bunfig --outfile app --target bun
 
 FROM docker.io/oven/bun:1.4.4-alpine
 

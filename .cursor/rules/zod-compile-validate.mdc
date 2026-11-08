@@ -19,6 +19,8 @@ preload = ["zod/compile"]
 
 `import 'zod/compile'` tylko wtedy, gdy preloadu nie ma. Musi wykonać się zanim jakikolwiek moduł zbuduje schemat. Skompilowany schemat działa jak zwykły (`parse`, `safeParse`, `validate`).
 
+Plik z `bun build --compile` nie wykonuje `preload` z `bunfig.toml` (szukałby `zod/compile` na dysku, obok własnej kopii `zod` w środku binarki). Dlatego `src/index.ts` importuje `zod/compile` jako pierwszy moduł, a build dostaje `--no-compile-autoload-bunfig`. `preload` w `bunfig.toml` zostaje dla `bun run` i testów.
+
 `z.compile(schema)` dla schematu wołanego wielokrotnie (obiekt, tablica, unia — zysk rzędu kilku razy). Schemat twórz raz na poziomie modułu i trzymaj wynik kompilacji.
 
 ```typescript
