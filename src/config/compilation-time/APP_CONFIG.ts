@@ -7,7 +7,8 @@ export const APP_CONFIG = defineConfig({
     appDescription: 'Buddy Stream Backend for video streaming platform'
   },
   security: {
-    hash_algorithm: 'argon2id'
+    hash_algorithm: 'argon2id',
+    jwt_algorithm: 'HS256'
   },
   database: {
     limits: {
