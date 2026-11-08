@@ -45,6 +45,9 @@ export const APP_CONFIG = defineConfig({
       roles: {
         min_name_length: 4,
         min_code_length: 6
+      },
+      permissions: {
+        min_code_length: 6
       }
     }
   }

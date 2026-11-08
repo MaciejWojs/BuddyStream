@@ -15,6 +15,9 @@ export const domainLimitsSchema = z.strictObject({
     roles: z.strictObject({
       min_name_length: positiveInt,
       min_code_length: positiveInt
+    }),
+    permissions: z.strictObject({
+      min_code_length: positiveInt
     })
   })
 });
