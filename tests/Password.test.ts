@@ -32,7 +32,7 @@ describe('Password', () => {
       const invalidPassword = strongRawPassword.slice(0, MIN_PASSWORD_LENGTH - 1);
       await expect(Password.create(invalidPassword)).rejects.toThrow('Invalid password');
     });
-    it('Password maximum length should be met', async () => {
+    it('Password maximum length should be enforced', async () => {
       const invalidPassword = `${crypto.randomBytes(MAX_PASSWORD_LENGTH + 1).toString('hex')}#12354`;
       await expect(Password.create(invalidPassword)).rejects.toThrow('Invalid password');
     });
