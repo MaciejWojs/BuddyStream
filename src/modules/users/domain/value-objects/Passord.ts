@@ -9,7 +9,7 @@ const MIN_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.min_password_length;
 const MAX_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.max_password_length;
 const MIN_PASSWORD_STRENGTH = APP_CONFIG.domain.limits.users.min_password_strength;
 
-const passwordSchema = z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH);
+const passwordSchema = z.compile(z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH));
 
 export class Password {
   private constructor(private readonly hashedPass: string) {}

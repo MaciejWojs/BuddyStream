@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
 const MAX_ROLE_DESCRIPTION_LENGTH = APP_CONFIG.database.limits.roles.max_description_length;
-const ROLE_DESCRIPTION_SCHEMA = z.string().max(MAX_ROLE_DESCRIPTION_LENGTH).optional();
+const ROLE_DESCRIPTION_SCHEMA = z.compile(z.string().max(MAX_ROLE_DESCRIPTION_LENGTH).optional());
 
 export class RoleDescription {
   private readonly description: string | null;

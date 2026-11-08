@@ -4,11 +4,13 @@ import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
 const MAX_ROLE_NAME_LENGTH = APP_CONFIG.database.limits.roles.max_name_length;
 const MIN_ROLE_NAME_LENGTH = APP_CONFIG.domain.limits.roles.min_name_length;
-const ROLE_NAME_SCHEMA = z
-  .string()
-  .regex(/^[a-zA-Z_-]+$/)
-  .min(MIN_ROLE_NAME_LENGTH)
-  .max(MAX_ROLE_NAME_LENGTH);
+const ROLE_NAME_SCHEMA = z.compile(
+  z
+    .string()
+    .regex(/^[a-zA-Z_-]+$/)
+    .min(MIN_ROLE_NAME_LENGTH)
+    .max(MAX_ROLE_NAME_LENGTH)
+);
 
 export class RoleName {
   private readonly name: string;

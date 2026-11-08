@@ -4,11 +4,13 @@ import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
 const MAX_CODE_LENGTH = APP_CONFIG.database.limits.roles.max_code_length;
 const MIN_CODE_LENGTH = APP_CONFIG.domain.limits.roles.min_code_length;
-const ROLE_CODE_SCHEMA = z
-  .string()
-  .regex(/^[a-zA-Z_-]+$/)
-  .min(MIN_CODE_LENGTH)
-  .max(MAX_CODE_LENGTH);
+const ROLE_CODE_SCHEMA = z.compile(
+  z
+    .string()
+    .regex(/^[a-zA-Z_-]+$/)
+    .min(MIN_CODE_LENGTH)
+    .max(MAX_CODE_LENGTH)
+);
 
 export class RoleCode {
   private readonly code: string;
