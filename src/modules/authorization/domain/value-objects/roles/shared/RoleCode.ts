@@ -11,7 +11,9 @@ const ROLE_CODE_SCHEMA = z
   .max(MAX_CODE_LENGTH);
 
 export class RoleCode {
-  constructor(readonly code: string) {
+  private readonly code: string;
+
+  constructor(code: string) {
     const newCode = code.trim();
     const letters = newCode.replaceAll(/[_-]/g, '');
     if (letters.length === 0) {
@@ -23,7 +25,7 @@ export class RoleCode {
     this.code = newCode.toUpperCase();
   }
 
-  public get value(): string {
+  public get value() {
     return this.code;
   }
 }
