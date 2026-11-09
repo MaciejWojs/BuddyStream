@@ -8,7 +8,8 @@ export const APP_CONFIG = defineConfig({
   },
   security: {
     hash_algorithm: 'argon2id',
-    jwt_algorithm: 'HS256'
+    jwt_algorithm: 'HS256',
+    access_token_expires_in_minutes: 15
   },
   database: {
     limits: {

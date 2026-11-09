@@ -15,5 +15,6 @@ export const securitySchema = z.strictObject({
     'PS256',
     'PS384',
     'PS512'
-  ])
+  ]),
+  access_token_expires_in_minutes: z.number().int().positive().max(60)
 });
