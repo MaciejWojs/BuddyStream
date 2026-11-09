@@ -9,7 +9,7 @@ const MAX_USERNAME_LENGTH = APP_CONFIG.database.limits.users.max_username_length
 const JWT_ALGORITHM = APP_CONFIG.security.jwt_algorithm;
 
 export const jwtSchema = z.jwt({ alg: JWT_ALGORITHM }).openapi({
-  description: 'JWT access token, valid for 15 minutes'
+  description: 'JWT access token, expires in few minutes'
 });
 
 export const emailSchema = z.email().openapi({
