@@ -34,3 +34,8 @@ export const usernameSchema = z
     description: `Username of the user, must be at least ${MIN_USERNAME_LENGTH} characters and at most ${MAX_USERNAME_LENGTH} characters`,
     example: 'john_doe'
   });
+
+export const timestampSchema = z.date().openapi({
+  description: 'Timestamp of the resource',
+  example: new Date().toISOString()
+});
