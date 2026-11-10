@@ -1,11 +1,12 @@
 import 'zod/compile';
-import { Hono } from 'hono';
 import { showRoutes } from 'hono/dev';
-const app = new Hono();
+import { OpenAPIHono } from '@hono/zod-openapi';
+const app = new OpenAPIHono().basePath('/api/v1');
 
 app.get('/', (c) => {
   return c.text('Hello Hono!');
 });
+
 
 showRoutes(app);
 
