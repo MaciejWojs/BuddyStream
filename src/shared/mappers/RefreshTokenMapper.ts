@@ -6,7 +6,7 @@ import { UserId } from '@/modules/users/domain/value-objects/UserId';
 
 export class RefreshTokenMapper {
   static toDomain(refreshToken: RefreshTokenSelect): RefreshToken {
-    return RefreshToken.create(
+    return RefreshToken.reconstitute(
       new RefreshTokenId(refreshToken.id),
       RefreshTokenHash.fromHash(refreshToken.token_hash),
       new UserId(refreshToken.user_id),
