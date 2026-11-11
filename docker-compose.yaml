@@ -8,8 +8,9 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     environment:
-      - NODE_ENV=development
-      - PORT=3000
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://buddystream:buddystream@db:5432/buddystream
     networks:
       - buddystream-network
   db:
