@@ -12,7 +12,10 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
   }
 
   async delete(refreshToken: RefreshToken) {
-    await this.refreshTokenDao.delete(refreshToken.id.value);
+    const existingRefreshToken = await this.findByHash(refreshToken.tokenHash);
+    if (existingRefreshToken) {
+      await this.refreshTokenDao.delete(refreshToken.tokenHash.value);
+    }
   }
 
   async findByHash(hash: RefreshTokenHash) {
