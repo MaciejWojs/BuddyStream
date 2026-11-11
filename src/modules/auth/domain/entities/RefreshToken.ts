@@ -23,6 +23,16 @@ export class RefreshToken {
     createdAt: Date,
     updatedAt: Date
   ): RefreshToken {
+    if (expiresAt < new Date()) {
+      throw new Error('Refresh token expired');
+    }
+    if (createdAt > expiresAt) {
+      throw new Error('Refresh token created in the future');
+    }
+    if (updatedAt < createdAt) {
+      throw new Error('Refresh token updated in the past');
+    }
+
     return new RefreshToken(id, tokenHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
   }
 
