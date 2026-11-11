@@ -43,6 +43,7 @@ authRouter.openapi(registerRoute, async (c) => {
       200
     );
   } catch (error) {
+    console.error(error);
     return c.json({ message: 'Internal Server Error' as const }, 500);
   }
 });
