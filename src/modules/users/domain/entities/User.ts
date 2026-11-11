@@ -9,10 +9,10 @@ export class User {
     readonly username: Username,
     readonly email: Email,
     readonly password: Password,
-    readonly avatarKey: string,
+    readonly avatarKey: string | null,
     readonly avatarPlaceholder: string | null,
     readonly createdAt: Date,
-    readonly updatedAt: Date
+    readonly updatedAt: Date | null
   ) {}
 
   changeAvatarKey(newAvatarKey: string) {
