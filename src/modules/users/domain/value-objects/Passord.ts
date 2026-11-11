@@ -8,6 +8,7 @@ const hashAlgorithm = APP_CONFIG.security.hash_algorithm;
 const MIN_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.min_password_length;
 const MAX_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.max_password_length;
 const MIN_PASSWORD_STRENGTH = APP_CONFIG.domain.limits.users.min_password_strength;
+const MAX_HASH_LENGTH = APP_CONFIG.database.limits.shared.max_hash_length;
 
 const passwordSchema = z.compile(z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH));
 
@@ -50,6 +51,9 @@ export class Password {
     const hashed = await bunPassword.hash(trimmedPassword, {
       algorithm: hashAlgorithm
     });
+    if (hashed.length > MAX_HASH_LENGTH) {
+      throw new Error('Password hash exceeds the configured column length');
+    }
     return new Password(hashed);
   }
 
