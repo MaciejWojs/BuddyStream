@@ -44,7 +44,7 @@ export class User {
       changes.avatarKey === undefined ? this.avatarKey : changes.avatarKey,
       changes.avatarPlaceholder === undefined ? this.avatarPlaceholder : changes.avatarPlaceholder,
       changes.createdAt ?? this.createdAt,
-      changes.updatedAt === undefined ? this.updatedAt : changes.updatedAt
+      new Date()
     );
   }
 }
