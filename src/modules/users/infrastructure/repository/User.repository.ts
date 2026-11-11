@@ -32,7 +32,11 @@ export class UserRepository implements IUserRepository {
   }
 
   async save(user: User) {
-    const userPersistence = UserMapper.toPersistence(user);
-    await this.userDao.update(userPersistence);
+    const existingUser = await this.findById(user.userId);
+    if (existingUser) {
+      await this.userDao.update(UserMapper.toPersistence(user));
+    } else {
+      await this.userDao.create(UserMapper.toPersistence(user));
+    }
   }
 }
