@@ -9,7 +9,8 @@ export const APP_CONFIG = defineConfig({
   security: {
     hash_algorithm: 'argon2id',
     jwt_algorithm: 'HS256',
-    access_token_expires_in_minutes: 15
+    access_token_expires_in_minutes: 15,
+    refresh_token_secret_length: 64
   },
   database: {
     limits: {
@@ -50,6 +51,10 @@ export const APP_CONFIG = defineConfig({
       },
       permissions: {
         min_code_length: 6
+      },
+      refresh_tokens: {
+        min_secret_length: 32,
+        max_secret_length: 128
       }
     }
   }

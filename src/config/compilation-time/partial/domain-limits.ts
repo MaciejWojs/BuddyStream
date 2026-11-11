@@ -18,6 +18,10 @@ export const domainLimitsSchema = z.strictObject({
     }),
     permissions: z.strictObject({
       min_code_length: positiveInt
+    }),
+    refresh_tokens: z.strictObject({
+      min_secret_length: positiveInt,
+      max_secret_length: positiveInt
     })
   })
 });
