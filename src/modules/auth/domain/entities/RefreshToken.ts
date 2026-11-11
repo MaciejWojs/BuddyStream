@@ -14,7 +14,7 @@ export class RefreshToken {
     readonly updatedAt: Date | null
   ) {}
 
-  static create(
+  static issue(
     id: RefreshTokenId,
     tokenHash: RefreshTokenHash,
     userId: UserId,
@@ -26,6 +26,25 @@ export class RefreshToken {
     if (expiresAt < new Date()) {
       throw new Error('Refresh token expired');
     }
+    if (createdAt > expiresAt) {
+      throw new Error('Refresh token created in the future');
+    }
+    if (updatedAt !== null && updatedAt < createdAt) {
+      throw new Error('Refresh token updated in the past');
+    }
+
+    return new RefreshToken(id, tokenHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
+  }
+
+  static reconstitute(
+    id: RefreshTokenId,
+    tokenHash: RefreshTokenHash,
+    userId: UserId,
+    revokedAt: Date | null,
+    expiresAt: Date,
+    createdAt: Date,
+    updatedAt: Date | null
+  ) {
     if (createdAt > expiresAt) {
       throw new Error('Refresh token created in the future');
     }
