@@ -11,7 +11,7 @@ export class RefreshToken {
     readonly revokedAt: Date | null,
     readonly expiresAt: Date,
     readonly createdAt: Date,
-    readonly updatedAt: Date
+    readonly updatedAt: Date | null
   ) {}
 
   static create(
@@ -21,7 +21,7 @@ export class RefreshToken {
     revokedAt: Date | null,
     expiresAt: Date,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date | null
   ): RefreshToken {
     if (expiresAt < new Date()) {
       throw new Error('Refresh token expired');
@@ -29,7 +29,7 @@ export class RefreshToken {
     if (createdAt > expiresAt) {
       throw new Error('Refresh token created in the future');
     }
-    if (updatedAt < createdAt) {
+    if (updatedAt !== null && updatedAt < createdAt) {
       throw new Error('Refresh token updated in the past');
     }
 
