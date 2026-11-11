@@ -28,7 +28,7 @@ export const APP_CONFIG = defineConfig({
         max_email_length: 100
       },
       shared: {
-        max_hash_length: 100,
+        max_hash_length: 255,
         max_assets_key_length: 100
       },
       max_message_body_length: 500,
