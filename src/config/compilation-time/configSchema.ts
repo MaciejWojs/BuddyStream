@@ -24,6 +24,9 @@ export const configSchema = z
     const maxRefreshTokenSecret = config.domain.limits.refresh_tokens.max_secret_length;
     const refreshTokenSecretLength = config.security.refresh_token_secret_length;
     const maxTokenHashLength = config.database.limits.max_token_hash_length;
+    const maxHashLength = config.database.limits.shared.max_hash_length;
+    const hashAlgorithm = config.security.hash_algorithm;
+    const minHashLength = hashAlgorithm === 'bcrypt' ? 60 : 128;
 
     if (minUsername > maxUsername) {
       ctx.addIssue({
@@ -72,6 +75,13 @@ export const configSchema = z
         code: 'custom',
         message: 'refresh token secret length must be within the configured secret length bounds',
         path: ['security', 'refresh_token_secret_length']
+      });
+    }
+    if (maxHashLength < minHashLength) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `max hash length cannot be shorter than a ${hashAlgorithm} digest`,
+        path: ['database', 'limits', 'shared', 'max_hash_length']
       });
     }
     if (maxTokenHashLength < 64) {
