@@ -41,10 +41,10 @@ export class User {
       changes.username ?? this.username,
       changes.email ?? this.email,
       changes.password ?? this.password,
-      changes.avatarKey ?? this.avatarKey,
-      changes.avatarPlaceholder ?? this.avatarPlaceholder,
+      changes.avatarKey === undefined ? this.avatarKey : changes.avatarKey,
+      changes.avatarPlaceholder === undefined ? this.avatarPlaceholder : changes.avatarPlaceholder,
       changes.createdAt ?? this.createdAt,
-      changes.updatedAt ?? this.updatedAt
+      changes.updatedAt === undefined ? this.updatedAt : changes.updatedAt
     );
   }
 }
