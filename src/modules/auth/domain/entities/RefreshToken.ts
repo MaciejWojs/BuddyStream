@@ -1,7 +1,10 @@
 import { UserId } from '@/modules/users/domain/value-objects/UserId';
 
+import { RefreshTokenId } from '../value-objects/RefreshTokenId';
+
 export class RefreshToken {
   private constructor(
+    readonly id: RefreshTokenId,
     readonly tokenHash: string,
     readonly userId: UserId,
     readonly revokedAt: Date | null,
@@ -11,6 +14,7 @@ export class RefreshToken {
   ) {}
 
   static create(
+    id: RefreshTokenId,
     secret: string,
     userId: UserId,
     revokedAt: Date | null,
@@ -19,10 +23,11 @@ export class RefreshToken {
     updatedAt: Date
   ) {
     const newHash = RefreshToken.hashRaw(secret);
-    return new RefreshToken(newHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
+    return new RefreshToken(id, newHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
   }
 
   static fromHash(
+    id: RefreshTokenId,
     hash: string,
     userId: UserId,
     revokedAt: Date | null,
@@ -30,7 +35,7 @@ export class RefreshToken {
     createdAt: Date,
     updatedAt: Date
   ): RefreshToken {
-    return new RefreshToken(hash, userId, revokedAt, expiresAt, createdAt, updatedAt);
+    return new RefreshToken(id, hash, userId, revokedAt, expiresAt, createdAt, updatedAt);
   }
 
   static hashRaw(raw: string): string {
@@ -55,6 +60,6 @@ export class RefreshToken {
 
   revoke() {
     const now = new Date();
-    return new RefreshToken(this.tokenHash, this.userId, now, this.expiresAt, this.createdAt, now);
+    return new RefreshToken(this.id, this.tokenHash, this.userId, now, this.expiresAt, this.createdAt, now);
   }
 }
