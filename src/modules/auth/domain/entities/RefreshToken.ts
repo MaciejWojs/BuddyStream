@@ -1,11 +1,12 @@
 import { UserId } from '@/modules/users/domain/value-objects/UserId';
 
+import { RefreshTokenHash } from '../value-objects/RefreshTokenHash';
 import { RefreshTokenId } from '../value-objects/RefreshTokenId';
 
 export class RefreshToken {
   private constructor(
     readonly id: RefreshTokenId,
-    readonly tokenHash: string,
+    readonly tokenHash: RefreshTokenHash,
     readonly userId: UserId,
     readonly revokedAt: Date | null,
     readonly expiresAt: Date,
@@ -15,35 +16,18 @@ export class RefreshToken {
 
   static create(
     id: RefreshTokenId,
-    secret: string,
-    userId: UserId,
-    revokedAt: Date | null,
-    expiresAt: Date,
-    createdAt: Date,
-    updatedAt: Date
-  ) {
-    const newHash = RefreshToken.hashRaw(secret);
-    return new RefreshToken(id, newHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
-  }
-
-  static fromHash(
-    id: RefreshTokenId,
-    hash: string,
+    tokenHash: RefreshTokenHash,
     userId: UserId,
     revokedAt: Date | null,
     expiresAt: Date,
     createdAt: Date,
     updatedAt: Date
   ): RefreshToken {
-    return new RefreshToken(id, hash, userId, revokedAt, expiresAt, createdAt, updatedAt);
-  }
-
-  static hashRaw(raw: string): string {
-    return new Bun.CryptoHasher('sha256').update(raw).digest('hex');
+    return new RefreshToken(id, tokenHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
   }
 
   equals(otherHash: string): boolean {
-    return this.tokenHash === otherHash;
+    return this.tokenHash.equals(otherHash);
   }
 
   isActive(): boolean {
