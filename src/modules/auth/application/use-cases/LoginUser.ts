@@ -61,7 +61,7 @@ export class LoginUser {
 
     //TODO: Add global role after DAO and Repository are implemented
     const accessToken = await sign(
-      { userId: user.userId.value, exp: Time.toEpochSeconds(accessExpiresAt) },
+      { sub: user.userId.value, exp: Time.toEpochSeconds(accessExpiresAt) },
       ACCESS_TOKEN_SECRET,
       ALGORITHM
     );
