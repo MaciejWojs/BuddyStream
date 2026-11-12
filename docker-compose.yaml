@@ -10,7 +10,7 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
-      DATABASE_URL: postgresql://buddystream:buddystream@db:5432/buddystream
+      DATABASE_URL: postgresql://${DB_USER:-buddystream}:${DB_PASSWORD:-buddystream}@db:5432/${DB_NAME:-buddystream}
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
     networks:
       - buddystream-network
@@ -19,9 +19,9 @@ services:
     ports:
       - 127.0.0.1:5432:5432
     environment:
-      - POSTGRES_USER=buddystream
-      - POSTGRES_PASSWORD=buddystream
-      - POSTGRES_DB=buddystream
+      POSTGRES_USER: ${DB_USER:-buddystream}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-buddystream}
+      POSTGRES_DB: ${DB_NAME:-buddystream}
     networks:
       - buddystream-network
 
