@@ -1,5 +1,5 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
-import { setCookie } from 'hono/cookie';
+import { deleteCookie, setCookie } from 'hono/cookie';
 
 import { db } from '@/infrastructure/db/client';
 import { GetUserInformation } from '@/modules/users/application/GetUserInformation';
@@ -16,6 +16,7 @@ import { RegisterUser } from '../application/use-cases/RegisterUser';
 import { RefreshTokenDao } from '../infrastructure/dao/RefreshToken.dao';
 import { RefreshTokenRepository } from '../infrastructure/repository/RefreshToken.repository';
 import { loginRoute } from './openapi/login';
+import { logoutRoute } from './openapi/logout';
 import { meRoute } from './openapi/me';
 import { registerRoute } from './openapi/register';
 
@@ -98,6 +99,16 @@ authRouter.openapi(loginRoute, async (c) => {
     console.error(error);
     return c.json({ message: 'Internal Server Error' as const }, 500);
   }
+});
+
+authRouter.openapi(logoutRoute, (c) => {
+  deleteCookie(c, 'refreshToken', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    path: '/'
+  });
+  return c.json({ message: 'User logged out successfully' as const }, 200);
 });
 
 export default authRouter;
