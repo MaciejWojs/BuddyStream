@@ -39,6 +39,10 @@ export const unauthorizedErrorResponseSchema = z.object({
   message: z.enum(['Missing X-session-id header', 'Invalid or expired session UUID'])
 });
 
+export const unauthorizedResponseSchema = z.object({
+  message: z.literal('Unauthorized')
+});
+
 // error 503
 export const serviceUnavailableErrorResponseSchema = z.object({
   message: z.literal('Service Unavailable')
