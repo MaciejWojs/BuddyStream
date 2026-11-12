@@ -10,6 +10,7 @@ export const APP_CONFIG = defineConfig({
     hash_algorithm: 'argon2id',
     jwt_algorithm: 'HS256',
     access_token_expires_in_minutes: 15,
+    refresf_token_expires_in_days: 7,
     refresh_token_secret_length: 64
   },
   database: {
