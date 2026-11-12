@@ -6,6 +6,7 @@ import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 import { EnvProvider } from '@/config/runtime/EnvProvider';
 import { IUserRepository } from '@/modules/users/domain/repositories/IUser.repository';
 import { Email } from '@/modules/users/domain/value-objects/Email';
+import { Time } from '@/shared/time/Time';
 
 import { RefreshToken } from '../../domain/entities/RefreshToken';
 import { IRefreshTokenRepository } from '../../domain/repositories/IRefreshToken.repository';
@@ -33,8 +34,8 @@ export class LoginUser {
       throw new Error('Invalid password');
     }
 
-    const refreshExpiresAt = this.expiresAt({ days: APP_CONFIG.security.refresf_token_expires_in_days });
-    const accessExpiresAt = this.expiresAt({ minutes: APP_CONFIG.security.access_token_expires_in_minutes });
+    const refreshExpiresAt = Time.expiresAt({ days: APP_CONFIG.security.refresf_token_expires_in_days });
+    const accessExpiresAt = Time.expiresAt({ minutes: APP_CONFIG.security.access_token_expires_in_minutes });
 
     const refreshTokenSecret = randomBytes(REFRESH_TOKEN_SECRET_LENGTH / 2).toString('hex');
     const ALGORITHM = APP_CONFIG.security.jwt_algorithm;
@@ -57,19 +58,11 @@ export class LoginUser {
 
     //TODO: Add global role after DAO and Repository are implemented
     const accessToken = await sign(
-      { userId: user.userId.value, exp: this.toEpochSeconds(accessExpiresAt) },
+      { userId: user.userId.value, exp: Time.toEpochSeconds(accessExpiresAt) },
       ACCESS_TOKEN_SECRET,
       ALGORITHM
     );
 
     return { accessToken: accessToken, refreshToken: refreshTokenSecret };
-  }
-
-  private expiresAt(duration: Temporal.DurationLike): Date {
-    return new Date(Temporal.Now.instant().add(duration).epochMilliseconds);
-  }
-
-  private toEpochSeconds(date: Date): number {
-    return Math.floor(date.getTime() / 1000);
   }
 }
