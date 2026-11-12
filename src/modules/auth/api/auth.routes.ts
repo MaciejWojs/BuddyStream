@@ -2,11 +2,14 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { setCookie } from 'hono/cookie';
 
 import { db } from '@/infrastructure/db/client';
+import { GetUserInformation } from '@/modules/users/application/GetUserInformation';
 import { Email } from '@/modules/users/domain/value-objects/Email';
 import { Password } from '@/modules/users/domain/value-objects/Passord';
+import { UserId } from '@/modules/users/domain/value-objects/UserId';
 import { Username } from '@/modules/users/domain/value-objects/Username';
 import { UserDao } from '@/modules/users/infrastructure/dao/User.dao';
 import { UserRepository } from '@/modules/users/infrastructure/repository/User.repository';
+import { ENV } from '@/shared/types/HonoENV';
 
 import { LoginUser } from '../application/use-cases/LoginUser';
 import { RegisterUser } from '../application/use-cases/RegisterUser';
@@ -16,21 +19,36 @@ import { loginRoute } from './openapi/login';
 import { meRoute } from './openapi/me';
 import { registerRoute } from './openapi/register';
 
-const authRouter = new OpenAPIHono();
+const authRouter = new OpenAPIHono<ENV>();
 
-authRouter.openapi(meRoute, (c) => {
-  return c.json(
-    {
-      id: '123e4567-e89b-12d3-a456-426614174000',
-      username: 'john_doe',
-      email: 'john.doe@example.com',
-      avatar_key: 'a1b2c3d4e5f6g7h8i9j0',
-      avatar_placeholder: 'https://example.com/avatar.png',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    200
-  );
+authRouter.openapi(meRoute, async (c) => {
+  const jwtPayload = c.get('jwt-payload');
+  if (!jwtPayload) {
+    return c.json({ message: 'Unauthorized' as const }, 401);
+  }
+  try {
+    const userId = new UserId(jwtPayload.sub);
+    const userDao = new UserDao(db);
+    const userRepository = new UserRepository(userDao);
+    const command = new GetUserInformation(userRepository);
+    const user = await command.execute(userId);
+
+    return c.json(
+      {
+        id: user.userId.value,
+        username: user.username.value,
+        email: user.email.value,
+        avatar_key: user.avatarKey,
+        avatar_placeholder: user.avatarPlaceholder,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      },
+      200
+    );
+  } catch (error) {
+    console.error(error);
+    return c.json({ message: 'Internal Server Error' as const }, 500);
+  }
 });
 
 authRouter.openapi(registerRoute, async (c) => {
