@@ -41,7 +41,7 @@ export const mePayloadSchema = z.object({
     description: 'Placeholder for the avatar'
   }),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema
+  updatedAt: timestampSchema.nullable()
 });
 
 // ── Types ───────────────────────────────────────────────────────────
