@@ -33,16 +33,10 @@ export class LoginUser {
       throw new Error('Invalid password');
     }
 
-    const REFRESH_TOKEN_EXPIRATION_TIME = APP_CONFIG.security.refresf_token_expires_in_days;
-    const ACCESS_TOKEN_EXPIRATION_TIME = APP_CONFIG.security.access_token_expires_in_minutes;
-    const RT_EXPIRATION_TIME = Temporal.Now.instant().add({
-      days: REFRESH_TOKEN_EXPIRATION_TIME
-    }).epochMilliseconds;
-    const AT_EXPIRATION_TIME = Temporal.Now.instant().add({
-      minutes: ACCESS_TOKEN_EXPIRATION_TIME
-    }).epochMilliseconds;
+    const refreshExpiresAt = this.expiresAt({ days: APP_CONFIG.security.refresf_token_expires_in_days });
+    const accessExpiresAt = this.expiresAt({ minutes: APP_CONFIG.security.access_token_expires_in_minutes });
 
-    const refreshTokenSecret = randomBytes(REFRESH_TOKEN_SECRET_LENGTH).toString('hex');
+    const refreshTokenSecret = randomBytes(REFRESH_TOKEN_SECRET_LENGTH / 2).toString('hex');
     const ALGORITHM = APP_CONFIG.security.jwt_algorithm;
 
     const now = new Date();
@@ -51,7 +45,7 @@ export class LoginUser {
       RefreshTokenHash.create(refreshTokenSecret),
       user.userId,
       null,
-      new Date(RT_EXPIRATION_TIME),
+      refreshExpiresAt,
       now,
       now
     );
@@ -62,8 +56,20 @@ export class LoginUser {
     const ACCESS_TOKEN_SECRET = envProvider.get('ACCESS_TOKEN_SECRET');
 
     //TODO: Add global role after DAO and Repository are implemented
-    const accessToken = await sign({ userId: user.userId, exp: AT_EXPIRATION_TIME }, ACCESS_TOKEN_SECRET, ALGORITHM);
+    const accessToken = await sign(
+      { userId: user.userId.value, exp: this.toEpochSeconds(accessExpiresAt) },
+      ACCESS_TOKEN_SECRET,
+      ALGORITHM
+    );
 
     return { accessToken: accessToken, refreshToken: refreshTokenSecret };
+  }
+
+  private expiresAt(duration: Temporal.DurationLike): Date {
+    return new Date(Temporal.Now.instant().add(duration).epochMilliseconds);
+  }
+
+  private toEpochSeconds(date: Date): number {
+    return Math.floor(date.getTime() / 1000);
   }
 }
