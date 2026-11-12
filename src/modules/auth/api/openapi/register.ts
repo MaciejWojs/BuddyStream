@@ -12,6 +12,7 @@ export const registerRoute = createRoute({
   summary: 'Register user',
   request: {
     body: {
+      description: 'User credentials to register',
       content: {
         'application/json': {
           schema: registerBodySchema
