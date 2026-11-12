@@ -24,7 +24,10 @@ export class LoginUser {
     this.refreshTokenRepository = refreshTokenRepository;
   }
 
-  async execute(email: Email, password: string): Promise<{ accessToken: string; refreshToken: string }> {
+  async execute(
+    email: Email,
+    password: string
+  ): Promise<{ accessToken: string; refreshToken: string; refreshExpiresAt: Date }> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new Error('User not found');
@@ -63,6 +66,6 @@ export class LoginUser {
       ALGORITHM
     );
 
-    return { accessToken: accessToken, refreshToken: refreshTokenSecret };
+    return { accessToken: accessToken, refreshToken: refreshTokenSecret, refreshExpiresAt };
   }
 }
