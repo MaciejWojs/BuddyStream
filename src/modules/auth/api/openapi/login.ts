@@ -9,6 +9,16 @@ export const loginRoute = createRoute({
   path: '/login',
   tags: ['Auth'],
   summary: 'Login user',
+  request: {
+    body: {
+      description: 'User credentials to login',
+      content: {
+        'application/json': {
+          schema: loginPayloadSchema
+        }
+      }
+    }
+  },
   responses: {
     200: {
       description: 'User logged in successfully',
