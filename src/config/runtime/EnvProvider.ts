@@ -5,7 +5,7 @@ export class EnvProvider {
 
   private readonly env: APPLICATION_ENV;
 
-  private constructor(environment: Record<string, string | undefined> = process.env) {
+  private constructor(environment: Record<string, string | undefined>) {
     const parsedEnvironment = envSchema.safeParse(environment);
     if (!parsedEnvironment.success) {
       throw new Error(`Invalid environment variables: ${parsedEnvironment.error.message}`);
@@ -14,10 +14,8 @@ export class EnvProvider {
     EnvProvider.instance = this;
   }
 
-  static getInstance(environment: Record<string, string | undefined>): EnvProvider {
-    if (!EnvProvider.instance) {
-      EnvProvider.instance = new EnvProvider(environment);
-    }
+  static getInstance(environment: Record<string, string | undefined> = process.env): EnvProvider {
+    EnvProvider.instance ??= new EnvProvider(environment);
     return EnvProvider.instance;
   }
 
