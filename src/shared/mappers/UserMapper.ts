@@ -20,6 +20,10 @@ export class UserMapper {
   }
 
   static toPersistence(user: User): UserSelect {
+    return UserMapper.toRaw(user);
+  }
+
+  static toRaw(user: User): UserSelect {
     return {
       id: user.userId.value,
       username: user.username.value,
