@@ -7,7 +7,8 @@ import { showRoutes } from 'hono/dev';
 import { APP_CONFIG } from './config/compilation-time/APP_CONFIG';
 import authRouter from './modules/auth/api/auth.routes';
 import { injectJwtPayload } from './shared/api/middleware/injectJwtPayload';
-const app = new OpenAPIHono().basePath('/api/v1');
+import { ENV } from './shared/types/HonoENV';
+const app = new OpenAPIHono<ENV>().basePath('/api/v1');
 
 app.use('*', injectJwtPayload);
 
