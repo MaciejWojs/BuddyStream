@@ -4,10 +4,13 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
 import { showRoutes } from 'hono/dev';
 
+import { initalizeConfig } from './config';
 import { APP_CONFIG } from './config/compilation-time/APP_CONFIG';
 import authRouter from './modules/auth/api/auth.routes';
 import { injectJwtPayload } from './shared/api/middleware/injectJwtPayload';
 import { ENV } from './shared/types/HonoENV';
+
+initalizeConfig();
 
 const app = new OpenAPIHono<ENV>().basePath('/api/v1');
 
