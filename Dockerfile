@@ -20,6 +20,9 @@ WORKDIR /backend
 COPY --chown=root:root --chmod=555 \
     --from=builder /build/app /backend/app
 
+COPY --chown=root:root --chmod=555 \
+    --from=builder /build/package.json /backend/package.json
+
 USER backend-user:backend-group
 
 CMD ["/backend/app"]
