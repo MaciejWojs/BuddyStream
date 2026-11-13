@@ -10,6 +10,7 @@
     "prepare": "husky",
     "db-diff": "mise exec -- atlas migrate diff --env local",
     "db-apply": "set -a && . ./.env && set +a && mise exec -- atlas migrate apply --env local --url \"${DATABASE_URL}?sslmode=disable\"",
+    "//TODO": "Delete/rename the line below after bun 1.4.5 is released, which implemnts `bun lint` eslint compatible",
     "lint": "eslint ",
     "lint:fix": "eslint --fix"
   },
