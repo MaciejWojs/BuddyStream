@@ -2,6 +2,7 @@ name: BuddyStream-initial-backend
 
 services:
   backend:
+    image: ghcr.io/maciejwojs/buddy-stream-backend:latest
     build:
       context: .
       dockerfile: Dockerfile
