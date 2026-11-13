@@ -5,6 +5,7 @@
     "types": ["bun", "node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "outDir": "dist/",
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
