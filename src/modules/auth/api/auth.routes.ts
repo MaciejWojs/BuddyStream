@@ -106,22 +106,17 @@ authRouter.openapi(loginRoute, async (c) => {
 authRouter.openapi(logoutRoute, async (c) => {
   const { refreshToken } = c.req.valid('cookie');
   const refreshTokenHash = RefreshTokenHash.create(refreshToken);
+  deleteCookie(c, 'refreshToken', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    path: '/'
+  });
   try {
-    const jwtPayload = c.get('jwt-payload');
-    if (!jwtPayload) {
-      return c.json({ message: 'Unauthorized' as const }, 401);
-    }
-    const userId = new UserId(jwtPayload.sub);
     const refreshTokenDao = new RefreshTokenDao(db);
     const refreshTokenRepository = new RefreshTokenRepository(refreshTokenDao);
     const command = new LogoutUser(refreshTokenRepository);
-    await command.execute(userId, refreshTokenHash);
-    deleteCookie(c, 'refreshToken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'Lax',
-      path: '/'
-    });
+    await command.execute(refreshTokenHash);
     return c.json({ message: 'User logged out successfully' as const }, 200);
   } catch (error) {
     console.error(error);
