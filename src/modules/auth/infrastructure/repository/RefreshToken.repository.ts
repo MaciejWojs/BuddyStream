@@ -29,7 +29,12 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
   }
 
   async save(refreshToken: RefreshToken) {
+    const existingRefreshToken = await this.findByHash(refreshToken.tokenHash);
     const refreshTokenPersistence = RefreshTokenMapper.toPersistence(refreshToken);
-    await this.refreshTokenDao.create(refreshTokenPersistence);
+    if (existingRefreshToken) {
+      await this.refreshTokenDao.update(refreshTokenPersistence);
+    } else {
+      await this.refreshTokenDao.create(refreshTokenPersistence);
+    }
   }
 }
