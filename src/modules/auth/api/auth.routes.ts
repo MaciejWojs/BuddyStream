@@ -12,7 +12,9 @@ import { UserRepository } from '@/modules/users/infrastructure/repository/User.r
 import { ENV } from '@/shared/types/HonoENV';
 
 import { LoginUser } from '../application/use-cases/LoginUser';
+import { LogoutUser } from '../application/use-cases/LogoutUser';
 import { RegisterUser } from '../application/use-cases/RegisterUser';
+import { RefreshTokenHash } from '../domain/value-objects/RefreshTokenHash';
 import { RefreshTokenDao } from '../infrastructure/dao/RefreshToken.dao';
 import { RefreshTokenRepository } from '../infrastructure/repository/RefreshToken.repository';
 import { loginRoute } from './openapi/login';
@@ -101,14 +103,30 @@ authRouter.openapi(loginRoute, async (c) => {
   }
 });
 
-authRouter.openapi(logoutRoute, (c) => {
-  deleteCookie(c, 'refreshToken', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'Lax',
-    path: '/'
-  });
-  return c.json({ message: 'User logged out successfully' as const }, 200);
+authRouter.openapi(logoutRoute, async (c) => {
+  const { refreshToken } = c.req.valid('cookie');
+  const refreshTokenHash = RefreshTokenHash.create(refreshToken);
+  try {
+    const jwtPayload = c.get('jwt-payload');
+    if (!jwtPayload) {
+      return c.json({ message: 'Unauthorized' as const }, 401);
+    }
+    const userId = new UserId(jwtPayload.sub);
+    const refreshTokenDao = new RefreshTokenDao(db);
+    const refreshTokenRepository = new RefreshTokenRepository(refreshTokenDao);
+    const command = new LogoutUser(refreshTokenRepository);
+    await command.execute(userId, refreshTokenHash);
+    deleteCookie(c, 'refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax',
+      path: '/'
+    });
+    return c.json({ message: 'User logged out successfully' as const }, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ message: 'Internal Server Error' as const }, 500);
+  }
 });
 
 export default authRouter;
