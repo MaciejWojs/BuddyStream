@@ -1,10 +1,12 @@
 import { version } from '../../../package.json';
 import { defineConfig } from './defineConfig';
 
+const appVersion = version.startsWith('v') ? version : `v${version}`;
+
 export const APP_CONFIG = defineConfig({
   core: {
     appName: 'buddy-stream-backend',
-    appVersion: version,
+    appVersion: appVersion,
     appDescription: 'Buddy Stream Backend for video streaming platform'
   },
   security: {
