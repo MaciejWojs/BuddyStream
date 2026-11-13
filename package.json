@@ -1,5 +1,6 @@
 {
   "name": "buddy-stream-backend",
+  "version": "v0.0.2",
   "private": true,
   "scripts": {
     "dev": "bun run --hot src/index.ts",
