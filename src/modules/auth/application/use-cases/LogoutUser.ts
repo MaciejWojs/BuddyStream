@@ -18,6 +18,6 @@ export class LogoutUser {
       console.error('Invalid refresh token - user id mismatch');
       throw new Error('Invalid refresh token');
     }
-    await this.refreshTokenRepository.delete(refreshToken.revoke());
+    await this.refreshTokenRepository.save(refreshToken.revoke());
   }
 }
