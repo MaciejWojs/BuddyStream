@@ -13,6 +13,260 @@ config:
         username: ''
         password: ''
       bypassProxy: ''
+
+docs:
+  content: |
+    # Auth API Documentation
+
+    This collection contains authentication endpoints for user registration, login, logout, and session retrieval. All requests are built on the base URL configured via environment variables `BASE_URL` and `BASE_PATH`.
+
+    ## Base URL
+
+    ```
+    {{BASE_URL}}/{{BASE_PATH}}
+    ```
+
+    | Variable   | Scope       | Description            |
+    |------------|-------------|------------------------|
+    | `BASE_URL` | Environment | e.g. `localhost:3000` |
+    | `BASE_PATH`| Environment | Application path prefix, e.g. `api/v1` |
+
+    ## Endpoints
+
+    - [`GET /auth/me`](#get-authme) — Get the currently authenticated user
+    - [`POST /auth/logout`](#post-authlogout) — Log the current user out
+    - [`POST /auth/login`](#post-authlogin) — Authenticate a user and create a session
+    - [`POST /auth/register`](#post-authregister) — Register a new user
+
+    ---
+
+    ## GET auth/me
+
+    Retrieves information about the currently authenticated user. Typically used to load or refresh the current user's profile after login.
+
+    ### Endpoint
+
+    ```
+    GET {{BASE_URL}}/{{BASE_PATH}}/auth/me
+    ```
+
+    ### Parameters
+
+    | Name     | Type   | In      | Description             |
+    |----------|--------|---------|-------------------------|
+    | —        | cookie | header  | `Authorization` / session token used to identify the user |
+
+    > The request relies on an active session established via [`POST /auth/login`](#post-authlogin). Send the returned access/refresh token in the `Authorization` header (e.g. `Bearer <token>`).
+
+    ### Example Request
+
+    ```
+    GET {{BASE_URL}}/{{BASE_PATH}}/auth/me
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    ```
+
+    ### Example Response
+
+    **Status:** `200 OK`
+
+    ```json
+    {
+      "id": "usr_1a2b3c4d",
+      "email": "jane.doe@example.com",
+      "name": "Jane Doe",
+      "role": "user",
+      "createdAt": "2024-05-18T09:30:00.000Z"
+    }
+    ```
+
+    ### Error Responses
+
+    **Status:** `401 Unauthorized` — Missing or invalid session token.
+
+    ```json
+    {
+      "error": "unauthorized",
+      "message": "Authentication required."
+    }
+    ```
+
+    ---
+
+    ## POST auth/logout
+
+    Logs out the current user and clears their active session/refresh tokens. After a successful logout, subsequent calls to [`GET /auth/me`](#get-authme) should return `401`.
+
+    ### Endpoint
+
+    ```
+    POST {{BASE_URL}}/{{BASE_PATH}}/auth/logout
+    ```
+
+    ### Headers
+
+    | Name          | Type   | Description                                    |
+    |---------------|--------|------------------------------------------------|
+    | `Authorization` | string | Bearer token for the session being terminated |
+
+    ### Example Request
+
+    ```
+    POST {{BASE_URL}}/{{BASE_PATH}}/auth/logout
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    Content-Type: application/json
+    ```
+
+    ### Example Response
+
+    **Status:** `200 OK`
+
+    ```json
+    {
+      "message": "Logged out successfully",
+      "data": {
+        "id": "usr_1a2b3c4d",
+        "email": "jane.doe@example.com"
+      }
+    }
+    ```
+
+    ### Error Responses
+
+    **Status:** `401 Unauthorized` — No valid session to log out.
+
+    ```json
+    {
+      "error": "unauthorized",
+      "message": "Authentication required."
+    }
+    ```
+
+    ---
+
+    ## POST auth/login
+
+    Authenticates a user with their email and password, returning an access token (and optionally a refresh token). Store the returned tokens securely — they are needed for [`GET /auth/me`](#get-authme) and sent to [`POST /auth/logout`](#post-authlogout).
+
+    ### Endpoint
+
+    ```
+    POST {{BASE_URL}}/{{BASE_PATH}}/auth/login
+    ```
+
+    ### Request Body
+
+    | Field     | Type   | Required | Description                          |
+    |-----------|--------|----------|--------------------------------------|
+    | `email`   | string | Yes      | User's registered email address      |
+    | `password`| string | Yes      | User's account password              |
+
+    **Content-Type:** `application/json`
+
+    ### Example Request
+
+    ```
+    POST {{BASE_URL}}/{{BASE_PATH}}/auth/login
+    Content-Type: application/json
+
+    {
+      "email": "jane.doe@example.com",
+      "password": "S3curePass123!"
+    }
+    ```
+
+    ### Example Response
+
+    **Status:** `200 OK`
+
+    ```json
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refreshToken": "rt_9f8e7d6c5b4a3210",
+      "expiresIn": 3600,
+      "data": {
+        "id": "usr_1a2b3c4d",
+        "email": "jane.doe@example.com",
+        "name": "Jane Doe",
+        "role": "user"
+      }
+    }
+    ```
+
+    ### Error Responses
+
+    **Status:** `401 Unauthorized` — Invalid email or password.
+
+    ```json
+    {
+      "error": "invalid_credentials",
+      "message": "The provided email or password is incorrect."
+    }
+    ```
+
+    ---
+
+    ## POST auth/register
+
+    Creates a new user account and returns an authentication token so the new account can immediately use protected endpoints such as [`GET /auth/me`](#get-authme).
+
+    ### Endpoint
+
+    ```
+    POST {{BASE_URL}}/{{BASE_PATH}}/auth/register
+    ```
+
+    ### Request Body
+
+    | Field     | Type   | Required | Description                          |
+    |-----------|--------|----------|--------------------------------------|
+    | `email`   | string | Yes      | Unique email address for the account |
+    | `password`| string | Yes      | Account password                     |
+    | `name`    | string | Optional | Full name of the user                |
+
+    **Content-Type:** `application/json`
+
+    ### Example Request
+
+    ```
+    POST {{BASE_URL}}/{{BASE_PATH}}/auth/register
+    Content-Type: application/json
+
+    {
+      "email": "new.user@example.com",
+      "password": "BrandNewPass123!",
+      "name": "New User"
+    }
+    ```
+
+    ### Example Response
+
+    **Status:** `201 Created`
+
+    ```json
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refreshToken": "rt_abc123def456ghi789",
+      "expiresIn": 3600,
+      "data": {
+        "id": "usr_new123",
+        "email": "new.user@example.com",
+        "name": "New User",
+        "role": "user"
+      }
+    }
+    ```
+
+    ### Error Responses
+
+    **Status:** `409 Conflict` — Email already registered.
+
+    ```json
+    {
+      "error": "email_taken",
+      "message": "An account with this email already exists."
+    }
+    ```
+  type: text/markdown
 bundled: false
 extensions:
   bruno:
