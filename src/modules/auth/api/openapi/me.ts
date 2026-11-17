@@ -12,7 +12,7 @@ export const meRoute = createRoute({
   summary: 'Get authenticated user info',
   security: [
     {
-      AuthorizationBearer: []
+      AccessTokenCookie: []
     }
   ],
   responses: {

@@ -20,18 +20,18 @@ app.get('/', (c) => {
   return c.text('Hello Hono!');
 });
 
-app.openAPIRegistry.registerComponent('securitySchemes', 'AuthorizationBearer', {
-  type: 'http',
-  scheme: 'bearer',
-  bearerFormat: 'JWT',
-  in: 'header'
+app.openAPIRegistry.registerComponent('securitySchemes', 'AccessTokenCookie', {
+  type: 'apiKey',
+  in: 'cookie',
+  name: 'accessToken',
+  description: 'JWT access token sent as an HttpOnly cookie'
 });
 
 app.openAPIRegistry.registerComponent('securitySchemes', 'RefreshTokenCookie', {
   type: 'apiKey',
   in: 'cookie',
   name: 'refreshToken',
-  bearerFormat: 'JWT'
+  description: 'Refresh token for refreshing the access token'
 });
 
 app.doc31('/docs', (_c) => ({
