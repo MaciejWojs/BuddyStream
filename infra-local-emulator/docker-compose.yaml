@@ -2,7 +2,7 @@ name: infra-local-emulator
 
 services:
   floci:
-    image: floci/floci:latest
+    image: floci/floci:2.5.0
     ports:
       - '4566:4566'
     extra_hosts:
