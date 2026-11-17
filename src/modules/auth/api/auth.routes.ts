@@ -82,7 +82,10 @@ authRouter.openapi(loginRoute, async (c) => {
     const refreshTokenDao = new RefreshTokenDao(db);
     const refreshTokenRepository = new RefreshTokenRepository(refreshTokenDao);
     const command = new LoginUser(userRepository, refreshTokenRepository);
-    const { accessToken, refreshToken, refreshExpiresAt } = await command.execute(new Email(email), password);
+    const { accessToken, refreshToken, refreshExpiresAt, accessExpiresAt } = await command.execute(
+      new Email(email),
+      password
+    );
     setCookie(c, 'refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
@@ -90,10 +93,16 @@ authRouter.openapi(loginRoute, async (c) => {
       expires: refreshExpiresAt,
       path: '/'
     });
+    setCookie(c, 'accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax',
+      expires: accessExpiresAt,
+      path: '/'
+    });
     return c.json(
       {
-        message: 'User logged in successfully',
-        accessToken
+        message: 'User logged in successfully'
       },
       200
     );
@@ -107,6 +116,12 @@ authRouter.openapi(logoutRoute, async (c) => {
   const { refreshToken } = c.req.valid('cookie');
   const refreshTokenHash = RefreshTokenHash.create(refreshToken);
   deleteCookie(c, 'refreshToken', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    path: '/'
+  });
+  deleteCookie(c, 'accessToken', {
     httpOnly: true,
     secure: true,
     sameSite: 'Lax',

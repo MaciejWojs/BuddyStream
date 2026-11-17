@@ -27,6 +27,31 @@ export const loginRoute = createRoute({
         'application/json': {
           schema: loginPayloadSchema
         }
+      },
+      headers: {
+        'Set-Cookie': {
+          description: 'Authentication cookies: accessToken and refreshToken',
+          schema: {
+            type: 'object',
+            required: ['accessToken', 'refreshToken'],
+            properties: {
+              accessToken: { type: 'string' },
+              refreshToken: { type: 'string' }
+            }
+          },
+          style: 'simple',
+          explode: true,
+          examples: {
+            tokens: {
+              dataValue: {
+                accessToken: '<jwt>; HttpOnly; Secure; SameSite=Lax; Path=/',
+                refreshToken: '<token>; HttpOnly; Secure; SameSite=Lax; Path=/'
+              },
+              serializedValue:
+                'accessToken=<jwt>; HttpOnly; Secure; SameSite=Lax; Path=/\nrefreshToken=<token>; HttpOnly; Secure; SameSite=Lax; Path=/'
+            }
+          }
+        }
       }
     },
     ...internalServerErrorResponse

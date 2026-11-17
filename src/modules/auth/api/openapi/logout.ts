@@ -21,6 +21,31 @@ export const logoutRoute = createRoute({
         'application/json': {
           schema: logoutPayloadSchema
         }
+      },
+      headers: {
+        'Set-Cookie': {
+          description: 'Clears the accessToken and refreshToken cookies',
+          schema: {
+            type: 'object',
+            required: ['accessToken', 'refreshToken'],
+            properties: {
+              accessToken: { type: 'string' },
+              refreshToken: { type: 'string' }
+            }
+          },
+          style: 'simple',
+          explode: true,
+          examples: {
+            cleared: {
+              dataValue: {
+                accessToken: '; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax',
+                refreshToken: '; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax'
+              },
+              serializedValue:
+                'accessToken=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax\nrefreshToken=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax'
+            }
+          }
+        }
       }
     },
     ...unauthorizedResponse,

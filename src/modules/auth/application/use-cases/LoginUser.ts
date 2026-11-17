@@ -27,7 +27,7 @@ export class LoginUser {
   async execute(
     email: Email,
     password: string
-  ): Promise<{ accessToken: string; refreshToken: string; refreshExpiresAt: Date }> {
+  ): Promise<{ accessToken: string; refreshToken: string; refreshExpiresAt: Date; accessExpiresAt: Date }> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new Error('User not found');
@@ -66,6 +66,6 @@ export class LoginUser {
       ALGORITHM
     );
 
-    return { accessToken: accessToken, refreshToken: refreshTokenSecret, refreshExpiresAt };
+    return { accessToken: accessToken, refreshToken: refreshTokenSecret, refreshExpiresAt, accessExpiresAt };
   }
 }

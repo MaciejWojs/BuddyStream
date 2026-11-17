@@ -14,8 +14,7 @@ export const registerPayloadSchema = z.compile(
 
 export const loginPayloadSchema = z.compile(
   z.object({
-    message: z.string(),
-    accessToken: jwtSchema
+    message: z.string()
   })
 );
 
