@@ -11,7 +11,13 @@ const envProvider = EnvProvider.getInstance();
 
 export const injectJwtPayload = createMiddleware<ENV>(async (c, next) => {
   const accessToken = getCookie(c, 'accessToken');
-  if (accessToken) {
+
+  if (!accessToken) {
+    c.set('jwt-payload', undefined);
+    return await next();
+  }
+
+  try {
     const decodedPayload = await verify(
       accessToken,
       envProvider.get('ACCESS_TOKEN_SECRET'),
@@ -19,7 +25,10 @@ export const injectJwtPayload = createMiddleware<ENV>(async (c, next) => {
     );
     const userId = new UserId(decodedPayload.sub as string);
     c.set('jwt-payload', { sub: userId.value });
-  } else {
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     c.set('jwt-payload', undefined);
   }
   await next();
