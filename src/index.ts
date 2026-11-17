@@ -34,8 +34,8 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'RefreshTokenCookie', {
   bearerFormat: 'JWT'
 });
 
-app.doc('/docs', (_c) => ({
-  openapi: '3.0.0',
+app.doc31('/docs', (_c) => ({
+  openapi: '3.2.0',
   info: {
     version: APP_CONFIG.core.appVersion,
     title: APP_CONFIG.core.appName,
