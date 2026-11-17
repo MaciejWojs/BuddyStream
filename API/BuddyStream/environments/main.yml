@@ -1,6 +1,14 @@
 name: main
 variables:
+  - name: HOSTNAME
+    value: localhost
+    description: 'Hostname of the Buddy agent environment where variables are resolved.'
+  - name: PORT
+    value: '3000'
+    description: 'Port number on which the service is exposed.'
   - name: BASE_URL
-    value: localhost:3000
+    value: '{{HOSTNAME}}:{{PORT}}'
+    description: 'Base URL of the service, built from HOSTNAME and PORT.'
   - name: BASE_PATH
     value: api/v1
+    description: 'API base path/version prefix used in all endpoints.'
