@@ -1,0 +1,18 @@
+info:
+  name: me
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{BASE_URL}}/{{BASE_PATH}}/auth/me
+  headers:
+    - name: Authorization
+      value: Bearer YOUR_SECRET_TOKEN
+  auth: inherit
+
+settings:
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

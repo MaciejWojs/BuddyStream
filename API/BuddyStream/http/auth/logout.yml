@@ -1,0 +1,18 @@
+info:
+  name: logout
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://{{BASE_URL}}/{{BASE_PATH}}/auth/logout
+  headers:
+    - name: Cookie
+      value: refreshToken=
+  auth: inherit
+
+settings:
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
