@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { emailSchema, passwordSchema, usernameSchema } from './auth.shared.shema';
+import { emailSchema, jwtSchema, passwordSchema, usernameSchema } from './auth.shared.shema';
 
 export const registerBodySchema = z.compile(
   z.object({
@@ -21,6 +21,14 @@ export const refreshTokenCookieSchema = z.compile(
   z.object({
     refreshToken: z.hash('sha256').openapi({
       description: 'Refresh token for the user'
+    })
+  })
+);
+
+export const accessTokenCookieSchema = z.compile(
+  z.object({
+    accessToken: jwtSchema.openapi({
+      description: 'JWT access token sent as an HttpOnly cookie'
     })
   })
 );
