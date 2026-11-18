@@ -1,9 +1,39 @@
-import { StreamerRole } from '../../domain/entities/StreamerRole';
-import { StreamerRoleId } from '../../domain/value-objects/roles/StreamerRoleId';
+import { StreamerRoleMapper } from '@/shared/mappers/StreamerRoleMapper';
 
-export interface IStreamerRoleRepository {
-  findById(id: StreamerRoleId): Promise<StreamerRole | null>;
-  findByName(name: string): Promise<StreamerRole | null>;
-  save(streamerRole: StreamerRole): Promise<void>;
-  delete(id: StreamerRoleId): Promise<void>;
+import { StreamerRole } from '../../domain/entities/StreamerRole';
+import { IStreamerRoleRepository } from '../../domain/repositories/IStreamerRole.repository';
+import { StreamerRoleId } from '../../domain/value-objects/roles/StreamerRoleId';
+import { StreamerRoleDao } from '../dao/StreamerRole.dao';
+
+export class StreamerRoleRepository implements IStreamerRoleRepository {
+  constructor(private readonly streamerRoleDao: StreamerRoleDao) {}
+
+  async delete(id: StreamerRoleId) {
+    await this.streamerRoleDao.delete(id.value);
+  }
+
+  async findById(id: StreamerRoleId) {
+    const streamerRole = await this.streamerRoleDao.findById(id.value);
+    if (!streamerRole) {
+      return null;
+    }
+    return StreamerRoleMapper.toDomain(streamerRole);
+  }
+
+  async findByName(name: string) {
+    const streamerRole = await this.streamerRoleDao.findByName(name);
+    if (!streamerRole) {
+      return null;
+    }
+    return StreamerRoleMapper.toDomain(streamerRole);
+  }
+
+  async save(streamerRole: StreamerRole) {
+    const existingStreamerRole = await this.findByName(streamerRole.name.value);
+    if (existingStreamerRole) {
+      throw new Error('Streamer role already exists');
+    }
+    const streamerRolePersistence = StreamerRoleMapper.toPersistence(streamerRole);
+    await this.streamerRoleDao.create(streamerRolePersistence);
+  }
 }
