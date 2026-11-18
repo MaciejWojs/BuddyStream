@@ -10,7 +10,7 @@ export class GlobalRole {
     readonly code: RoleCode,
     readonly description: RoleDescription,
     readonly createdAt: Date,
-    readonly updatedAt: Date
+    readonly updatedAt: Date | null
   ) {}
 
   private copy(changes: Partial<GlobalRole>) {
