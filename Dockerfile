@@ -1,4 +1,4 @@
-FROM docker.io/oven/bun:1.4.4-alpine AS builder
+FROM docker.io/oven/bun:1.4.5-alpine AS builder
 WORKDIR /build
 
 COPY package.json bun.lock ./
@@ -8,7 +8,7 @@ COPY . .
 RUN bun install --offline --frozen-lockfile --ignore-scripts
 RUN bun build --check src/ --minify --compile --bytecode --no-compile-autoload-bunfig --outfile app --target bun
 
-FROM docker.io/oven/bun:1.4.4-alpine
+FROM docker.io/oven/bun:1.4.5-alpine
 
 RUN addgroup -S backend-group && \
 adduser -S -D -H -G backend-group backend-user
