@@ -14,21 +14,6 @@
       }
     },
     {
-      "label": "run infrastructure emulator",
-      "options": {
-        "cwd": "${workspaceFolder}/infra-local-emulator"
-      },
-      "command": "docker compose up -d",
-      "type": "shell",
-      "presentation": {
-        "reveal": "always"
-      },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
       "label": "Run backend server",
       "type": "shell",
       "command": "bun run dev",
