@@ -1,8 +1,7 @@
 name: BuddyStream-initial-backend
-
 services:
   backend:
-    image: ghcr.io/maciejwojs/buddy-stream-backend:0.0.3
+    image: ghcr.io/maciejwojs/buddy-stream-backend:0.0.4
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,7 +24,6 @@ services:
       POSTGRES_DB: ${DB_NAME:-buddystream}
     networks:
       - buddystream-network
-
 networks:
   buddystream-network:
     driver: bridge
