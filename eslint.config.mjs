@@ -8,7 +8,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig(
-  globalIgnores(['.dist/**', 'infra-local-emulator/**']),
+  globalIgnores(['dist/**', 'infra-local-emulator/**']),
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
