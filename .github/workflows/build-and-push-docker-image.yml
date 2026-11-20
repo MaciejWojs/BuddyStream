@@ -59,3 +59,44 @@ jobs:
         run: |
           TAG=${GITHUB_REF_NAME#v}
           echo "image_url=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:$TAG" | tr [:upper:] [:lower:] >> $GITHUB_OUTPUT
+  make-pr-locally:
+    runs-on: ubuntu-latest
+    needs: push
+    steps:
+      - uses: actions/checkout@v7
+      - name: Create branch
+        run: |
+          BRANCH="image-bump-backend-${GITHUB_RUN_ID}"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          git switch -c "$BRANCH"
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install yq (YAML processor)
+        run: |
+          sudo snap install yq
+
+      - name: Update image version in docker-compose.yaml
+        shell: bash
+        env:
+          VERSION: ${{ needs.push.outputs.image_url }}
+        run: |
+          export TAG="${VERSION##*:}"
+          yq eval-all -i '.services.backend.image = env(TAG)' docker-compose.yaml
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "chore: Update backend image to ${{ needs.push.outputs.image_url }}"
+          git push origin "$BRANCH"
+
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --repo ${{ github.repository }} \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: bump backend image to ${{ needs.push.outputs.image_url }}" \
+            --body "Automated backend image bump from ${{ github.repository }} run $GITHUB_RUN_ID"
