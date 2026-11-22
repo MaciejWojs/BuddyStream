@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@hono/zod-openapi": "^1.6.3",
-    "@scalar/hono-api-reference": "^0.12.23",
+    "@scalar/hono-api-reference": "^0.12.24",
     "drizzle-kit": "1.0.0-rc.5",
     "drizzle-orm": "1.0.0-rc.5",
-    "hono": "^4.13.19",
+    "hono": "^4.13.20",
     "zod": "^4.6.7",
     "zxcvbn": "^4.4.2"
   },
@@ -33,7 +33,7 @@
     "eslint-plugin-perfectionist": "^5.14.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.1",
+    "lint-staged": "^17.6.2",
     "typescript-eslint": "^8.73.0"
   },
   "lint-staged": {
