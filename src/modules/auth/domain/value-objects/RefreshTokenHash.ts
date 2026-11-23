@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
+import { InvalidRefreshTokenHashError, InvalidRefreshTokenSecretError } from '../errors/AuthErrors';
+
 const MIN_SECRET_LENGTH = APP_CONFIG.domain.limits.refresh_tokens.min_secret_length;
 const MAX_SECRET_LENGTH = APP_CONFIG.domain.limits.refresh_tokens.max_secret_length;
 const MAX_TOKEN_HASH_LENGTH = APP_CONFIG.database.limits.max_token_hash_length;
@@ -34,19 +36,19 @@ export class RefreshTokenHash {
 
   static create(secret: string): RefreshTokenHash {
     if (!secretSchema.validate(secret)) {
-      throw new Error('Invalid refresh token secret');
+      throw new InvalidRefreshTokenSecretError();
     }
 
     const hash = new Bun.CryptoHasher('sha256').update(secret).digest('hex');
     if (!hashSchema.validate(hash)) {
-      throw new Error('Invalid refresh token hash');
+      throw new InvalidRefreshTokenHashError();
     }
     return new RefreshTokenHash(hash);
   }
 
   static fromHash(hash: string): RefreshTokenHash {
     if (!hashSchema.validate(hash)) {
-      throw new Error('Invalid refresh token hash');
+      throw new InvalidRefreshTokenHashError();
     }
     return new RefreshTokenHash(hash);
   }

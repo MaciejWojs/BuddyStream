@@ -9,6 +9,7 @@ import { Email } from '@/modules/users/domain/value-objects/Email';
 import { Time } from '@/shared/time/Time';
 
 import { RefreshToken } from '../../domain/entities/RefreshToken';
+import { InvalidCredentialsError } from '../../domain/errors/AuthErrors';
 import { IRefreshTokenRepository } from '../../domain/repositories/IRefreshToken.repository';
 import { RefreshTokenHash } from '../../domain/value-objects/RefreshTokenHash';
 import { RefreshTokenId } from '../../domain/value-objects/RefreshTokenId';
@@ -30,11 +31,11 @@ export class LoginUser {
   ): Promise<{ accessToken: string; refreshToken: string; refreshExpiresAt: Date; accessExpiresAt: Date }> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new Error('User not found');
+      throw new InvalidCredentialsError();
     }
     const isPasswordValid = await user.password.verify(password);
     if (!isPasswordValid) {
-      throw new Error('Invalid password');
+      throw new InvalidCredentialsError();
     }
 
     const refreshExpiresAt = Time.expiresAt({ days: APP_CONFIG.security.refresf_token_expires_in_days });

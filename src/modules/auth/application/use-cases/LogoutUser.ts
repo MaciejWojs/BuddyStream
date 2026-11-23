@@ -1,3 +1,4 @@
+import { InvalidRefreshTokenError } from '../../domain/errors/AuthErrors';
 import { IRefreshTokenRepository } from '../../domain/repositories/IRefreshToken.repository';
 import { RefreshTokenHash } from '../../domain/value-objects/RefreshTokenHash';
 
@@ -9,7 +10,7 @@ export class LogoutUser {
   async execute(refreshTokenHash: RefreshTokenHash): Promise<void> {
     const refreshToken = await this.refreshTokenRepository.findByHash(refreshTokenHash);
     if (!refreshToken) {
-      throw new Error('Invalid refresh token');
+      throw new InvalidRefreshTokenError();
     }
     await this.refreshTokenRepository.save(refreshToken.revoke());
   }

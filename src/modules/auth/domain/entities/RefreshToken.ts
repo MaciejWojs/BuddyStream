@@ -1,5 +1,10 @@
 import { UserId } from '@/modules/users/domain/value-objects/UserId';
 
+import {
+  RefreshTokenCreatedInFutureError,
+  RefreshTokenExpiredError,
+  RefreshTokenUpdatedInPastError
+} from '../errors/AuthErrors';
 import { RefreshTokenHash } from '../value-objects/RefreshTokenHash';
 import { RefreshTokenId } from '../value-objects/RefreshTokenId';
 
@@ -24,13 +29,13 @@ export class RefreshToken {
     updatedAt: Date | null
   ): RefreshToken {
     if (expiresAt < new Date()) {
-      throw new Error('Refresh token expired');
+      throw new RefreshTokenExpiredError();
     }
     if (createdAt > expiresAt) {
-      throw new Error('Refresh token created in the future');
+      throw new RefreshTokenCreatedInFutureError();
     }
     if (updatedAt !== null && updatedAt < createdAt) {
-      throw new Error('Refresh token updated in the past');
+      throw new RefreshTokenUpdatedInPastError();
     }
 
     return new RefreshToken(id, tokenHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
@@ -46,10 +51,10 @@ export class RefreshToken {
     updatedAt: Date | null
   ) {
     if (createdAt > expiresAt) {
-      throw new Error('Refresh token created in the future');
+      throw new RefreshTokenCreatedInFutureError();
     }
     if (updatedAt !== null && updatedAt < createdAt) {
-      throw new Error('Refresh token updated in the past');
+      throw new RefreshTokenUpdatedInPastError();
     }
 
     return new RefreshToken(id, tokenHash, userId, revokedAt, expiresAt, createdAt, updatedAt);
