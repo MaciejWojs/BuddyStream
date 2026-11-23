@@ -1,4 +1,5 @@
 import { GlobalRole } from '../../domain/entities/GlobalRole';
+import { GlobalRoleAlreadyExistsError } from '../../domain/errors/AuthorizationErrors';
 import { GlobalRoleRepository } from '../../infrastructure/repository/GlobalRole.repository';
 
 export class CreateGlobalRole {
@@ -7,7 +8,7 @@ export class CreateGlobalRole {
   async execute(globalRole: GlobalRole) {
     const existingGlobalRole = await this.globalRoleRepository.findByName(globalRole.name.value);
     if (existingGlobalRole) {
-      throw new Error('Global role already exists');
+      throw new GlobalRoleAlreadyExistsError();
     }
     await this.globalRoleRepository.save(globalRole);
   }

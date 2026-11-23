@@ -1,6 +1,7 @@
 import { StreamerRoleMapper } from '@/shared/mappers/StreamerRoleMapper';
 
 import { StreamerRole } from '../../domain/entities/StreamerRole';
+import { StreamerRoleAlreadyExistsError } from '../../domain/errors/AuthorizationErrors';
 import { IStreamerRoleRepository } from '../../domain/repositories/IStreamerRole.repository';
 import { StreamerRoleId } from '../../domain/value-objects/roles/StreamerRoleId';
 import { StreamerRoleDao } from '../dao/StreamerRole.dao';
@@ -31,7 +32,7 @@ export class StreamerRoleRepository implements IStreamerRoleRepository {
   async save(streamerRole: StreamerRole) {
     const existingStreamerRole = await this.findByName(streamerRole.name.value);
     if (existingStreamerRole) {
-      throw new Error('Streamer role already exists');
+      throw new StreamerRoleAlreadyExistsError();
     }
     const streamerRolePersistence = StreamerRoleMapper.toPersistence(streamerRole);
     await this.streamerRoleDao.create(streamerRolePersistence);

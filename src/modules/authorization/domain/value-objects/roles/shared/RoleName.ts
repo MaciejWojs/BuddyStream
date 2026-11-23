@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
+import { InvalidRoleNameError } from '../../../errors/AuthorizationErrors';
+
 const MAX_ROLE_NAME_LENGTH = APP_CONFIG.database.limits.roles.max_name_length;
 const MIN_ROLE_NAME_LENGTH = APP_CONFIG.domain.limits.roles.min_name_length;
 const ROLE_NAME_SCHEMA = z.compile(
@@ -19,10 +21,10 @@ export class RoleName {
     const newName = name.trim();
     const letters = newName.replaceAll(/[_-]/g, '');
     if (letters.length === 0) {
-      throw new Error('Invalid role name');
+      throw new InvalidRoleNameError();
     }
     if (!ROLE_NAME_SCHEMA.validate(newName)) {
-      throw new Error('Invalid role name');
+      throw new InvalidRoleNameError();
     }
     this.name = newName;
   }

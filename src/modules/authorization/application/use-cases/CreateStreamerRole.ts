@@ -1,4 +1,5 @@
 import { StreamerRole } from '../../domain/entities/StreamerRole';
+import { StreamerRoleAlreadyExistsError } from '../../domain/errors/AuthorizationErrors';
 import { IStreamerRoleRepository } from '../../domain/repositories/IStreamerRole.repository';
 
 export class CreateStreamerRole {
@@ -7,7 +8,7 @@ export class CreateStreamerRole {
   async execute(streamerRole: StreamerRole) {
     const existingStreamerRole = await this.streamerRoleRepository.findByName(streamerRole.name.value);
     if (existingStreamerRole) {
-      throw new Error('Streamer role already exists');
+      throw new StreamerRoleAlreadyExistsError();
     }
     await this.streamerRoleRepository.save(streamerRole);
   }
