@@ -4,6 +4,13 @@ import zxcvbn from 'zxcvbn';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
+import {
+  InvalidPasswordError,
+  PasswordComplexityError,
+  PasswordHashTooLongError,
+  PasswordTooWeakError
+} from '../errors/UserErrors';
+
 const hashAlgorithm = APP_CONFIG.security.hash_algorithm;
 const MIN_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.min_password_length;
 const MAX_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.max_password_length;
@@ -15,14 +22,14 @@ const passwordSchema = z.compile(z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PAS
 export class Password {
   private constructor(private readonly hashedPass: string) {}
 
-  private static checkPasswordRequirements(password: string): void | Error {
+  private static checkPasswordRequirements(password: string): void {
     const res = passwordSchema.validate(password);
     if (!res) {
-      throw new Error('Invalid password');
+      throw new InvalidPasswordError();
     }
     const { score } = zxcvbn(password);
     if (score < MIN_PASSWORD_STRENGTH) {
-      throw new Error('Password is not strong enough');
+      throw new PasswordTooWeakError();
     }
 
     const hasLower = /[a-z]/.test(password);
@@ -31,9 +38,7 @@ export class Password {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!hasLower || !hasUpper || !hasDigit || !hasSpecialChar) {
-      throw new Error(
-        'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character'
-      );
+      throw new PasswordComplexityError();
     }
   }
 
@@ -42,7 +47,7 @@ export class Password {
    *
    * @param rawPassword - The raw password to create the Password object from
    * @returns A new Password object
-   * @throws {Error} If the password is invalid
+   * @throws {DomainError} If the password breaks a domain rule
    */
   static async create(rawPassword: string): Promise<Password> {
     const trimmedPassword = rawPassword.trim();
@@ -52,7 +57,7 @@ export class Password {
       algorithm: hashAlgorithm
     });
     if (hashed.length > MAX_HASH_LENGTH) {
-      throw new Error('Password hash exceeds the configured column length');
+      throw new PasswordHashTooLongError();
     }
     return new Password(hashed);
   }

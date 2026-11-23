@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import crypto from 'node:crypto';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
+import { InvalidPasswordError, PasswordTooWeakError } from '@/modules/users/domain/errors/UserErrors';
 import { Password } from '@/modules/users/domain/value-objects/Passord';
 
 const strongRawPassword = 'Ww`^5oc`CX=6#0I8#v39#x%_8Yt)1r';
@@ -30,18 +31,18 @@ describe('Password', () => {
   describe('length', () => {
     it('Password minimal length should be met', async () => {
       const invalidPassword = strongRawPassword.slice(0, MIN_PASSWORD_LENGTH - 1);
-      await expect(Password.create(invalidPassword)).rejects.toThrow('Invalid password');
+      await expect(Password.create(invalidPassword)).rejects.toBeInstanceOf(InvalidPasswordError);
     });
     it('Password maximum length should be enforced', async () => {
       const invalidPassword = `${crypto.randomBytes(MAX_PASSWORD_LENGTH + 1).toString('hex')}#12354`;
-      await expect(Password.create(invalidPassword)).rejects.toThrow('Invalid password');
+      await expect(Password.create(invalidPassword)).rejects.toBeInstanceOf(InvalidPasswordError);
     });
   });
 
   describe('strength', () => {
     it('Password strength should be met', async () => {
       const invalidPassword = 'a'.repeat(MIN_PASSWORD_LENGTH);
-      await expect(Password.create(invalidPassword)).rejects.toThrow('Password is not strong enough');
+      await expect(Password.create(invalidPassword)).rejects.toBeInstanceOf(PasswordTooWeakError);
     });
   });
 });

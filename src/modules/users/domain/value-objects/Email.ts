@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
+import { InvalidEmailError } from '../errors/UserErrors';
+
 const MAX_EMAIL_LENGTH = APP_CONFIG.database.limits.users.max_email_length;
 const emailSchema = z.compile(z.email().max(MAX_EMAIL_LENGTH));
 
@@ -10,7 +12,7 @@ export class Email {
     const normalizedEmail = email.toLowerCase().trim();
     const res = emailSchema.validate(normalizedEmail);
     if (!res) {
-      throw new Error('Invalid email');
+      throw new InvalidEmailError();
     }
     this.email = normalizedEmail;
   }
