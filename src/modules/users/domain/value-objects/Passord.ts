@@ -4,12 +4,7 @@ import zxcvbn from 'zxcvbn';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
-import {
-  InvalidPasswordError,
-  PasswordComplexityError,
-  PasswordHashTooLongError,
-  PasswordTooWeakError
-} from '../errors/UserErrors';
+import { UserError } from '../errors/UserErrors';
 
 const hashAlgorithm = APP_CONFIG.security.hash_algorithm;
 const MIN_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.min_password_length;
@@ -25,11 +20,11 @@ export class Password {
   private static checkPasswordRequirements(password: string): void {
     const res = passwordSchema.validate(password);
     if (!res) {
-      throw new InvalidPasswordError();
+      throw new UserError('user.password.invalid');
     }
     const { score } = zxcvbn(password);
     if (score < MIN_PASSWORD_STRENGTH) {
-      throw new PasswordTooWeakError();
+      throw new UserError('user.password.too_weak');
     }
 
     const hasLower = /[a-z]/.test(password);
@@ -38,7 +33,7 @@ export class Password {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!hasLower || !hasUpper || !hasDigit || !hasSpecialChar) {
-      throw new PasswordComplexityError();
+      throw new UserError('user.password.complexity');
     }
   }
 
@@ -47,7 +42,7 @@ export class Password {
    *
    * @param rawPassword - The raw password to create the Password object from
    * @returns A new Password object
-   * @throws {DomainError} If the password breaks a domain rule
+   * @throws {UserError} If the password breaks a domain rule
    */
   static async create(rawPassword: string): Promise<Password> {
     const trimmedPassword = rawPassword.trim();
@@ -57,7 +52,7 @@ export class Password {
       algorithm: hashAlgorithm
     });
     if (hashed.length > MAX_HASH_LENGTH) {
-      throw new PasswordHashTooLongError();
+      throw new UserError('user.password.hash_too_long');
     }
     return new Password(hashed);
   }

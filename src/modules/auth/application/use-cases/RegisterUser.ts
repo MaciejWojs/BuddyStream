@@ -1,5 +1,5 @@
 import { User } from '@/modules/users/domain/entities/User';
-import { UserAlreadyExistsError } from '@/modules/users/domain/errors/UserErrors';
+import { UserError } from '@/modules/users/domain/errors/UserErrors';
 import { IUserRepository } from '@/modules/users/domain/repositories/IUser.repository';
 import { Email } from '@/modules/users/domain/value-objects/Email';
 import { Password } from '@/modules/users/domain/value-objects/Passord';
@@ -14,7 +14,7 @@ export class RegisterUser {
   async execute(email: Email, password: Password, username: Username): Promise<User> {
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
-      throw new UserAlreadyExistsError();
+      throw new UserError('user.already_exists');
     }
     const newUser = new User(new UserId(), username, email, password, null, null, new Date(), new Date());
     await this.userRepository.save(newUser);

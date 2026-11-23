@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 import { UserId } from '@/modules/users/domain/value-objects/UserId';
-import { InvalidUuidError } from '@/shared/domain/errors/InvalidUuidError';
+import { IdError } from '@/shared/domain/errors/IdError';
 
 const uuid_v7 = '01a1ad32-0663-74ab-a681-baa99bba4a0a';
 const FORCE_UUID_V7 = APP_CONFIG.domain.force_uuid_v7;
@@ -24,7 +24,7 @@ describe('creation', () => {
 
 describe('validation', () => {
   test('Should throw an error if the UUID is invalid', () => {
-    expect(() => new UserId('invalid-uuid')).toThrow(InvalidUuidError);
+    expect(() => new UserId('invalid-uuid')).toThrow(new IdError('id.invalid'));
   });
 
   describe.skipIf(!FORCE_UUID_V7)('UUID v7', () => {
@@ -35,7 +35,7 @@ describe('validation', () => {
 
     test('Should throw an error if the UUID is v4 format', () => {
       const uuid_v4 = 'e97d7fb5-5185-452b-b2b8-20bd2da70a9a';
-      expect(() => new UserId(uuid_v4)).toThrow(InvalidUuidError);
+      expect(() => new UserId(uuid_v4)).toThrow(new IdError('id.invalid'));
     });
   });
 });

@@ -1,12 +1,12 @@
 import { randomUUIDv7 } from 'bun';
 
-import { InvalidUuidError } from '../domain/errors/InvalidUuidError';
+import { IdError } from '../domain/errors/IdError';
 import { uuidSchema } from '../scheamas/UUID';
 
 export class BaseUUID {
   constructor(private readonly id: string = randomUUIDv7()) {
     if (!uuidSchema.validate(id)) {
-      throw new InvalidUuidError();
+      throw new IdError('id.invalid');
     }
   }
 

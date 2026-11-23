@@ -10,27 +10,24 @@ export type ClientDomainError = {
   status: 401 | 404 | 409 | 422;
 };
 
-const STATUS_BY_KIND = {
-  [DomainErrorKind.Conflict]: 409,
-  [DomainErrorKind.NotFound]: 404,
-  [DomainErrorKind.Unauthorized]: 401,
-  [DomainErrorKind.Validation]: 422
-} as const;
-
 export function asClientDomainError(error: unknown): ClientDomainError | null {
-  if (!(error instanceof DomainError) || error.kind === DomainErrorKind.Invariant) {
+  if (!(error instanceof DomainError)) {
     return null;
   }
 
+  const body = { code: error.code, message: error.message };
+
   switch (error.kind) {
     case DomainErrorKind.Conflict:
+      return { body, status: 409 };
     case DomainErrorKind.NotFound:
+      return { body, status: 404 };
     case DomainErrorKind.Unauthorized:
+      return { body, status: 401 };
     case DomainErrorKind.Validation:
-      return {
-        body: { code: error.code, message: error.message },
-        status: STATUS_BY_KIND[error.kind]
-      };
+      return { body, status: 422 };
+    case DomainErrorKind.Invariant:
+      return null;
     default:
       return null;
   }

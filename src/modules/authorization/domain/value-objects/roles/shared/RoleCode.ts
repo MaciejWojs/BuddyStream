@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
 
-import { InvalidRoleCodeError } from '../../../errors/AuthorizationErrors';
+import { AuthorizationError } from '../../../errors/AuthorizationErrors';
 
 const MAX_CODE_LENGTH = APP_CONFIG.database.limits.roles.max_code_length;
 const MIN_CODE_LENGTH = APP_CONFIG.domain.limits.roles.min_code_length;
@@ -21,10 +21,10 @@ export class RoleCode {
     const newCode = code.trim();
     const letters = newCode.replaceAll(/[_-]/g, '');
     if (letters.length === 0) {
-      throw new InvalidRoleCodeError();
+      throw new AuthorizationError('role.code.invalid');
     }
     if (!ROLE_CODE_SCHEMA.validate(newCode)) {
-      throw new InvalidRoleCodeError();
+      throw new AuthorizationError('role.code.invalid');
     }
     this.code = newCode.toUpperCase();
   }

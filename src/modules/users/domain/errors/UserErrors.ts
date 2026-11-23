@@ -1,93 +1,56 @@
-import { DomainError, DomainErrorKind } from '@/shared/domain/errors/DomainError';
+import { DomainError, type DomainErrorSpec } from '@/shared/domain/errors/DomainError';
 
-export class InvalidEmailError extends DomainError {
-  readonly code = 'user.email.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid email');
-  }
-}
-
-export class InvalidUsernameError extends DomainError {
-  readonly code = 'user.username.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid username');
-  }
-}
-
-export class UsernameWhitespaceError extends DomainError {
-  readonly code = 'user.username.whitespace';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Username cannot contain whitespace');
-  }
-}
-
-export class InvalidPasswordError extends DomainError {
-  readonly code = 'user.password.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid password');
-  }
-}
-
-export class PasswordTooWeakError extends DomainError {
-  readonly code = 'user.password.too_weak';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Password is not strong enough');
-  }
-}
-
-export class PasswordComplexityError extends DomainError {
-  readonly code = 'user.password.complexity';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super(
+const userErrorCatalog = {
+  'user.already_exists': {
+    kind: 'conflict',
+    message: 'User already exists'
+  },
+  'user.email.invalid': {
+    kind: 'validation',
+    message: 'Invalid email'
+  },
+  'user.not_found': {
+    kind: 'not_found',
+    message: 'User not found'
+  },
+  'user.password.complexity': {
+    kind: 'validation',
+    message:
       'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character'
-    );
+  },
+  'user.password.hash_too_long': {
+    kind: 'invariant',
+    message: 'Password hash exceeds the configured column length'
+  },
+  'user.password.invalid': {
+    kind: 'validation',
+    message: 'Invalid password'
+  },
+  'user.password.too_weak': {
+    kind: 'validation',
+    message: 'Password is not strong enough'
+  },
+  'user.username.invalid': {
+    kind: 'validation',
+    message: 'Invalid username'
+  },
+  'user.username.whitespace': {
+    kind: 'validation',
+    message: 'Username cannot contain whitespace'
   }
-}
+} as const satisfies Record<string, DomainErrorSpec>;
 
-export class PasswordHashTooLongError extends DomainError {
-  readonly code = 'user.password.hash_too_long';
+type UserErrorCode = keyof typeof userErrorCatalog;
 
-  readonly kind = DomainErrorKind.Invariant;
+type UserErrorDefinition<C extends UserErrorCode> = (typeof userErrorCatalog)[C];
 
-  constructor() {
-    super('Password hash exceeds the configured column length');
-  }
-}
-
-export class UserAlreadyExistsError extends DomainError {
-  readonly code = 'user.already_exists';
-
-  readonly kind = DomainErrorKind.Conflict;
-
-  constructor() {
-    super('User already exists');
-  }
-}
-
-export class UserNotFoundError extends DomainError {
-  readonly code = 'user.not_found';
-
-  readonly kind = DomainErrorKind.NotFound;
-
-  constructor() {
-    super('User not found');
+export class UserError<C extends UserErrorCode = UserErrorCode> extends DomainError<
+  C,
+  UserErrorDefinition<C>['kind'],
+  UserErrorDefinition<C>['message']
+> {
+  constructor(code: C) {
+    const definition = userErrorCatalog[code] as UserErrorDefinition<C>;
+    super(code, definition.kind, definition.message);
   }
 }

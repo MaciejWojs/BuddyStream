@@ -1,71 +1,47 @@
-import { DomainError, DomainErrorKind } from '@/shared/domain/errors/DomainError';
+import { DomainError, type DomainErrorSpec } from '@/shared/domain/errors/DomainError';
 
-export class GlobalRoleAlreadyExistsError extends DomainError {
-  readonly code = 'role.global.already_exists';
-
-  readonly kind = DomainErrorKind.Conflict;
-
-  constructor() {
-    super('Global role already exists');
+const authorizationErrorCatalog = {
+  'permission.code.invalid': {
+    kind: 'validation',
+    message: 'Invalid permission code'
+  },
+  'permission.description.invalid': {
+    kind: 'validation',
+    message: 'Invalid permission description'
+  },
+  'role.code.invalid': {
+    kind: 'validation',
+    message: 'Invalid role code'
+  },
+  'role.description.invalid': {
+    kind: 'validation',
+    message: 'Invalid role description'
+  },
+  'role.global.already_exists': {
+    kind: 'conflict',
+    message: 'Global role already exists'
+  },
+  'role.name.invalid': {
+    kind: 'validation',
+    message: 'Invalid role name'
+  },
+  'role.streamer.already_exists': {
+    kind: 'conflict',
+    message: 'Streamer role already exists'
   }
-}
+} as const satisfies Record<string, DomainErrorSpec>;
 
-export class StreamerRoleAlreadyExistsError extends DomainError {
-  readonly code = 'role.streamer.already_exists';
+type AuthorizationErrorCode = keyof typeof authorizationErrorCatalog;
 
-  readonly kind = DomainErrorKind.Conflict;
+type AuthorizationErrorDefinition<C extends AuthorizationErrorCode> = (typeof authorizationErrorCatalog)[C];
 
-  constructor() {
-    super('Streamer role already exists');
-  }
-}
-
-export class InvalidRoleNameError extends DomainError {
-  readonly code = 'role.name.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid role name');
-  }
-}
-
-export class InvalidRoleCodeError extends DomainError {
-  readonly code = 'role.code.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid role code');
-  }
-}
-
-export class InvalidRoleDescriptionError extends DomainError {
-  readonly code = 'role.description.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid role description');
-  }
-}
-
-export class InvalidPermissionCodeError extends DomainError {
-  readonly code = 'permission.code.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid permission code');
-  }
-}
-
-export class InvalidPermissionDescriptionError extends DomainError {
-  readonly code = 'permission.description.invalid';
-
-  readonly kind = DomainErrorKind.Validation;
-
-  constructor() {
-    super('Invalid permission description');
+export class AuthorizationError<C extends AuthorizationErrorCode = AuthorizationErrorCode> extends DomainError<
+  C,
+  AuthorizationErrorDefinition<C>['kind'],
+  AuthorizationErrorDefinition<C>['message']
+> {
+  constructor(code: C) {
+    const definition = authorizationErrorCatalog[code] as AuthorizationErrorDefinition<C>;
+    super(code, definition.kind, definition.message);
   }
 }

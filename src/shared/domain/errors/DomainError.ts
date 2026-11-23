@@ -8,13 +8,27 @@ export const DomainErrorKind = {
 
 export type DomainErrorKind = (typeof DomainErrorKind)[keyof typeof DomainErrorKind];
 
-export abstract class DomainError extends Error {
-  abstract readonly code: string;
+export type DomainErrorSpec = {
+  readonly kind: DomainErrorKind;
+  readonly message: string;
+};
 
-  abstract readonly kind: DomainErrorKind;
+export class DomainError<
+  C extends string = string,
+  K extends DomainErrorKind = DomainErrorKind,
+  M extends string = string
+> extends Error {
+  readonly code: C;
 
-  constructor(message: string) {
+  readonly kind: K;
+
+  override readonly message: M;
+
+  protected constructor(code: C, kind: K, message: M) {
     super(message);
     this.name = new.target.name;
+    this.code = code;
+    this.kind = kind;
+    this.message = message;
   }
 }
