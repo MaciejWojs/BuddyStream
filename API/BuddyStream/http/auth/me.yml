@@ -7,8 +7,8 @@ http:
   method: GET
   url: http://{{BASE_URL}}/{{BASE_PATH}}/auth/me
   headers:
-    - name: Authorization
-      value: Bearer YOUR_SECRET_TOKEN
+    - name: Cookie
+      value: accessToken=
   auth: inherit
 
 settings:

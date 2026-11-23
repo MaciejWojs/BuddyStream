@@ -16,364 +16,173 @@ config:
 
 docs:
   content: |
-    # Auth API Documentation
+    # Auth API
 
-    This collection contains authentication endpoints for user registration, login, logout, and session retrieval. All requests are built on the base URL configured via environment variables `BASE_URL` and `BASE_PATH`.
-
-    ## Base URL
+    Registration, login, the current user, and logout. Requests use `BASE_URL` and `BASE_PATH`.
 
     ```
     {{BASE_URL}}/{{BASE_PATH}}
     ```
 
-    | Variable   | Scope       | Description            |
-    |------------|-------------|------------------------|
-    | `BASE_URL` | Environment | e.g. `localhost:3000` |
-    | `BASE_PATH`| Environment | Application path prefix, e.g. `api/v1` |
+    | Variable | Example | Description |
+    |---|---|---|
+    | `BASE_URL` | `localhost:3000` | Host and port |
+    | `BASE_PATH` | `api/v1` | API prefix |
+
+    Sessions travel in `HttpOnly` cookies. Login sets `accessToken` and `refreshToken`. `GET /auth/me` reads `accessToken`. `POST /auth/logout` reads `refreshToken` and clears both cookies.
+
+    A broken domain rule returns:
+
+    ```json
+    { "code": "auth.invalid_credentials", "message": "Invalid credentials" }
+    ```
+
+    | Status | When |
+    |---|---|
+    | 401 | The caller is not allowed to finish the action |
+    | 404 | The resource does not exist |
+    | 409 | The operation conflicts with the current state |
+    | 422 | The value breaks a domain rule |
+    | 500 | `{ "message": "Internal Server Error" }` |
 
     ## Endpoints
 
-    - [`POST /auth/register`](#post-authregister) — Register a new user (also authenticates and returns tokens)
-    - [`POST /auth/login`](#post-authlogin) — Authenticate a user and create a session
-    - [`GET /auth/me`](#get-authme) — Get the currently authenticated user
-    - [`POST /auth/logout`](#post-authlogout) — Log the current user out
+    - [`POST /auth/register`](#post-authregister) — create an account
+    - [`POST /auth/login`](#post-authlogin) — set the session cookies
+    - [`GET /auth/me`](#get-authme) — read the signed-in user
+    - [`POST /auth/logout`](#post-authlogout) — revoke the refresh token and clear the cookies
 
-    ---
-
-    ## Quick Start (Full Lifecycle Example)
-
-    This end-to-end walkthrough shows how to register a new user, capture their tokens, use them on protected requests, and finally log out. Run the steps in order in Bruno:
+    ## Quick start
 
     ```bash
-    # 1. Register — creates the account AND returns auth tokens
-    curl -X POST "{{BASE_URL}}/{{BASE_PATH}}/auth/register" \
+    # 1. Register. The body is only a confirmation message.
+    curl -X POST "http://{{BASE_URL}}/{{BASE_PATH}}/auth/register" \
       -H "Content-Type: application/json" \
-      -d '{
-            "email": "jane.doe@example.com",
-            "password": "S3curePass123!",
-            "name": "Jane Doe"
-          }'
-    # → capture token & refreshToken from the response
+      -d '{"username":"jane_doe","email":"jane.doe@example.com","password":"SecurePassword123#"}'
 
-    # 2. Call a protected route with that token (e.g. get current user)
-    curl -X GET "{{BASE_URL}}/{{BASE_PATH}}/auth/me" \
-      -H "Authorization: Bearer <token>"
+    # 2. Login. Keep the Set-Cookie headers in a jar.
+    curl -c cookies.txt -X POST "http://{{BASE_URL}}/{{BASE_PATH}}/auth/login" \
+      -H "Content-Type: application/json" \
+      -d '{"email":"jane.doe@example.com","password":"SecurePassword123#"}'
 
-    # 3. Log out when done — clears the session
-    curl -X POST "{{BASE_URL}}/{{BASE_PATH}}/auth/logout" \
-      -H "Authorization: Bearer <token>"
+    # 3. Read the current user with the access cookie.
+    curl -b cookies.txt "http://{{BASE_URL}}/{{BASE_PATH}}/auth/me"
+
+    # 4. Log out. The refresh cookie is revoked and both cookies are cleared.
+    curl -b cookies.txt -c cookies.txt -X POST "http://{{BASE_URL}}/{{BASE_PATH}}/auth/logout"
     ```
 
-    > After a successful logout, [`GET /auth/me`](#get-authme) with the same token returns `401 Unauthorized`.
+    ## POST /auth/register
 
-    ---
+    `POST {{BASE_URL}}/{{BASE_PATH}}/auth/register`
 
-    ## POST auth/register
+    | Field | Required | Rules | Example |
+    |---|---|---|---|
+    | `username` | yes | 3–database limit, no whitespace | `jane_doe` |
+    | `email` | yes | email address | `jane.doe@example.com` |
+    | `password` | yes | 14–64 characters, mixed case, a digit, a symbol, and enough strength | `SecurePassword123#` |
 
-    Creates a new user account and returns an authentication token so the new account can immediately use protected endpoints such as [`GET /auth/me`](#get-authme). No separate login step is needed.
+    **200 OK**
 
-    ### Endpoint
-
+    ```json
+    { "message": "User registered successfully" }
     ```
-    POST {{BASE_URL}}/{{BASE_PATH}}/auth/register
+
+    **409 Conflict** — the email is already registered.
+
+    ```json
+    { "code": "user.already_exists", "message": "User already exists" }
     ```
 
-    **Content-Type:** `application/json`
+    **422 Unprocessable Entity** — a domain rule rejected the value. `code` is one of `user.email.invalid`, `user.username.invalid`, `user.username.whitespace`, `user.password.invalid`, `user.password.too_weak`, `user.password.complexity`.
 
-    ### Request Body
+    ```json
+    { "code": "user.password.too_weak", "message": "Password is not strong enough" }
+    ```
 
-    | Field     | Type   | Required | Description                          | Example            |
-    |-----------|--------|----------|--------------------------------------|--------------------|
-    | `email`   | string | Yes      | Unique email address for the account | `jane.doe@example.com` |
-    | `password`| string | Yes      | Account password (min. 8 chars, recommended to include upper/lower/digit/symbol) | `S3curePass123!`  |
-    | `name`    | string | Optional | Full name of the user                | `Jane Doe`         |
+    ## POST /auth/login
 
-    ### Example Request
+    `POST {{BASE_URL}}/{{BASE_PATH}}/auth/login`
 
-    ```http
-    POST {{BASE_URL}}/{{BASE_PATH}}/auth/register
-    Content-Type: application/json
+    | Field | Required | Example |
+    |---|---|---|
+    | `email` | yes | `jane.doe@example.com` |
+    | `password` | yes | `SecurePassword123#` |
 
+    **200 OK** — body plus `Set-Cookie` for `accessToken` and `refreshToken` (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`).
+
+    ```json
+    { "message": "User logged in successfully" }
+    ```
+
+    **401 Unauthorized** — unknown email and a wrong password share one code.
+
+    ```json
+    { "code": "auth.invalid_credentials", "message": "Invalid credentials" }
+    ```
+
+    **422 Unprocessable Entity** — `user.email.invalid`.
+
+    ## GET /auth/me
+
+    `GET {{BASE_URL}}/{{BASE_PATH}}/auth/me`
+
+    Cookie: `accessToken=<jwt>`.
+
+    **200 OK**
+
+    ```json
     {
+      "id": "019a1ad3-2066-7374-aba6-81baa99bba4a",
+      "username": "jane_doe",
       "email": "jane.doe@example.com",
-      "password": "S3curePass123!",
-      "name": "Jane Doe"
+      "avatar_key": null,
+      "avatar_placeholder": null,
+      "createdAt": "2026-05-18T09:30:00.000Z",
+      "updatedAt": null
     }
     ```
 
-    ### Example Response
-
-    **Status:** `201 Created`
+    **401 Unauthorized** — the access cookie is missing or the JWT middleware did not accept it.
 
     ```json
-    {
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "refreshToken": "rt_abc123def456ghi789",
-      "expiresIn": 3600,
-      "data": {
-        "id": "usr_new123",
-        "email": "jane.doe@example.com",
-        "name": "Jane Doe",
-        "role": "user"
-      }
-    }
+    { "message": "Unauthorized" }
     ```
 
-    **Field descriptions:**
-
-    | Property       | Type   | Description                                        |
-    |----------------|--------|----------------------------------------------------|
-    | `token`        | string | Short-lived access token for protected endpoints  |
-    | `refreshToken`| string | Long-lived token used to obtain a new access token |
-    | `expiresIn`    | number | Access token lifetime in seconds (e.g. `3600`)     |
-    | `data.id`      | string | Unique user identifier                             |
-    | `data.email`   | string | The registered email address                       |
-    | `data.name`    | string | The account's full name                            |
-    | `data.role`    | string | Role assigned to the account (e.g. `user`)         |
-
-    > **Security note:** Save both `token` and `refreshToken` immediately. You will need them for [`GET /auth/me`](#get-authme) and later for [`POST /auth/logout`](#post-authlogout).
-
-    ### Error Responses
-
-    **Status:** `409 Conflict` — Email already registered.
+    **404 Not Found** — the token subject is not a user.
 
     ```json
-    {
-      "error": "email_taken",
-      "message": "An account with this email already exists."
-    }
+    { "code": "user.not_found", "message": "User not found" }
     ```
 
-    **Status:** `422 Unprocessable Entity` — Missing or invalid fields (e.g. weak password).
+    **422 Unprocessable Entity** — the token subject is not a valid id.
 
     ```json
-    {
-      "error": "validation_error",
-      "message": "The request could not be processed due to validation errors.",
-      "errors": [
-        {
-          "field": "password",
-          "code": "too_weak",
-          "message": "Password must contain at least one uppercase letter, lowercase letter, number, and symbol."
-        }
-      ]
-    }
+    { "code": "id.invalid", "message": "Invalid UUID" }
     ```
 
-    ---
+    ## POST /auth/logout
 
-    ## POST auth/login
+    `POST {{BASE_URL}}/{{BASE_PATH}}/auth/logout`
 
-    Authenticates a user with their email and password, returning an access token (and optionally a refresh token). Store the returned tokens securely — they are needed for [`GET /auth/me`](#get-authlogin) and sent to [`POST /auth/logout`](#post-authlogout).
+    Cookie: `refreshToken=<secret>`. The response clears `accessToken` and `refreshToken`.
 
-    ### Endpoint
-
-    ```
-    POST {{BASE_URL}}/{{BASE_PATH}}/auth/login
-    ```
-
-    **Content-Type:** `application/json`
-
-    ### Request Body
-
-    | Field     | Type   | Required | Description                          | Example            |
-    |-----------|--------|----------|--------------------------------------|--------------------|
-    | `email`   | string | Yes      | User's registered email address      | `jane.doe@example.com` |
-    | `password`| string | Yes      | User's account password              | `S3curePass123!`  |
-
-    ### Example Request
-
-    ```http
-    POST {{BASE_URL}}/{{BASE_PATH}}/auth/login
-    Content-Type: application/json
-
-    {
-      "email": "jane.doe@example.com",
-      "password": "S3curePass123!"
-    }
-    ```
-
-    ### Example Response
-
-    **Status:** `200 OK`
+    **200 OK**
 
     ```json
-    {
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "refreshToken": "rt_9f8e7d6c5b4a3210",
-      "expiresIn": 3600,
-      "data": {
-        "id": "usr_1a2b3c4d",
-        "email": "jane.doe@example.com",
-        "name": "Jane Doe",
-        "role": "user"
-      }
-    }
+    { "message": "User logged out successfully" }
     ```
 
-    **Field descriptions:**
-
-    | Property       | Type   | Description                                        |
-    |----------------|--------|----------------------------------------------------|
-    | `token`        | string | Short-lived access token for protected endpoints  |
-    | `refreshToken`| string | Long-lived token used to obtain a new access token |
-    | `expiresIn`    | number | Access token lifetime in seconds (e.g. `3600`)     |
-    | `data.id`      | string | Unique user identifier                             |
-    | `data.email`   | string | The registered email address                       |
-    | `data.name`    | string | The account's full name                            |
-    | `data.role`    | string | Role assigned to the account (e.g. `user`)         |
-
-    > **Tip:** Many clients also persist tokens in local storage and attach them via an `Authorization: Bearer <token>` header on subsequent requests. See [`GET /auth/me`](#get-authme).
-
-    ### Error Responses
-
-    **Status:** `401 Unauthorized` — Invalid email or password.
+    **401 Unauthorized** — the refresh token is not an active session.
 
     ```json
-    {
-      "error": "invalid_credentials",
-      "message": "The provided email or password is incorrect."
-    }
+    { "code": "auth.refresh_token.invalid", "message": "Invalid refresh token" }
     ```
 
-    **Status:** `429 Too Many Requests` — Rate limit exceeded (e.g. too many failed attempts).
+    **422 Unprocessable Entity** — the cookie value is not a refresh-token secret.
 
     ```json
-    {
-      "error": "rate_limited",
-      "message": "Too many authentication attempts. Please try again later.",
-      "retryAfter": 60
-    }
-    ```
-
-    ---
-
-    ## GET auth/me
-
-    Retrieves information about the currently authenticated user. Typically used to load or refresh the current user's profile after login.
-
-    ### Endpoint
-
-    ```
-    GET {{BASE_URL}}/{{BASE_PATH}}/auth/me
-    ```
-
-    ### Parameters
-
-    | Name     | Type   | In      | Description             | Example            |
-    |----------|--------|---------|-------------------------|--------------------|
-    | `Authorization` | header | Yes | Bearer token identifying the user | `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
-
-    > The request relies on an active session established via [`POST /auth/login`](#post-authlogin). Send the returned access/refresh token in the `Authorization` header (e.g. `Bearer <token>`).
-
-    ### Example Request
-
-    ```http
-    GET {{BASE_URL}}/{{BASE_PATH}}/auth/me
-    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-    ```
-
-    ### Example Response
-
-    **Status:** `200 OK`
-
-    ```json
-    {
-      "id": "usr_1a2b3c4d",
-      "email": "jane.doe@example.com",
-      "name": "Jane Doe",
-      "role": "user",
-      "createdAt": "2024-05-18T09:30:00.000Z"
-    }
-    ```
-
-    **Field descriptions:**
-
-    | Property       | Type   | Description                                        |
-    |----------------|--------|----------------------------------------------------|
-    | `id`           | string | Unique user identifier                             |
-    | `email`        | string | The registered email address                       |
-    | `name`         | string | The account's full name                            |
-    | `role`         | string | Role assigned to the account (e.g. `user`)         |
-    | `createdAt`    | string | ISO-8601 timestamp of account creation             |
-
-    ### Error Responses
-
-    **Status:** `401 Unauthorized` — Missing or invalid session token.
-
-    ```json
-    {
-      "error": "unauthorized",
-      "message": "Authentication required."
-    }
-    ```
-
-    ---
-
-    ## POST auth/logout
-
-    Logs out the current user and clears their active session/refresh tokens. After a successful logout, subsequent calls to [`GET /auth/me`](#get-authme) should return `401`.
-
-    ### Endpoint
-
-    ```
-    POST {{BASE_URL}}/{{BASE_PATH}}/auth/logout
-    ```
-
-    **Content-Type:** `application/json` (accepted; body is optional)
-
-    ### Headers
-
-    | Name          | Type   | Description                                    | Example            |
-    |---------------|--------|------------------------------------------------|--------------------|
-    | `Authorization` | string | Bearer token for the session being terminated | `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
-
-    ### Request Body
-
-    ```json
-    {
-      "logoutAt": "2024-05-18T10:00:00.000Z"
-    }
-    ```
-
-    | Field     | Type   | Required | Description                          | Example            |
-    |-----------|--------|----------|--------------------------------------|--------------------|
-    | `logoutAt`| string | Optional | ISO-8601 timestamp of logout (server-managed if omitted) | `2024-05-18T10:00:00.000Z` |
-
-    ### Example Request
-
-    ```http
-    POST {{BASE_URL}}/{{BASE_PATH}}/auth/logout
-    Content-Type: application/json
-
-    {
-      "logoutAt": "2024-05-18T10:00:00.000Z"
-    }
-    ```
-
-    ### Example Response
-
-    **Status:** `200 OK`
-
-    ```json
-    {
-      "message": "Logged out successfully",
-      "data": {
-        "id": "usr_1a2b3c4d",
-        "email": "jane.doe@example.com"
-      }
-    }
-    ```
-
-    ### Error Responses
-
-    **Status:** `401 Unauthorized` — No valid session to log out.
-
-    ```json
-    {
-      "error": "unauthorized",
-      "message": "Authentication required."
-    }
+    { "code": "auth.refresh_token.secret_invalid", "message": "Invalid refresh token secret" }
     ```
   type: text/markdown
 bundled: false
