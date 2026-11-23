@@ -1,6 +1,7 @@
 import { createRoute } from '@hono/zod-openapi';
 
 import { internalServerErrorResponse } from '@/shared/api/openapi/errors/500.openapi';
+import { domainConflictResponse, domainValidationResponse } from '@/shared/api/openapi/errors/domain.openapi';
 
 import { registerBodySchema } from '../schemas/auth.requests.schema';
 import { registerPayloadSchema } from '../schemas/auth.responses.schema';
@@ -29,6 +30,8 @@ export const registerRoute = createRoute({
         }
       }
     },
+    ...domainConflictResponse,
+    ...domainValidationResponse,
     ...internalServerErrorResponse
   }
 });

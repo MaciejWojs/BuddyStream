@@ -51,3 +51,8 @@ export const serviceUnavailableErrorResponseSchema = z.object({
 export const notFoundErrorResponseSchema = z.object({
   message: z.literal('Not Found')
 });
+
+export const domainErrorResponseSchema = z.object({
+  code: z.string(),
+  message: z.string()
+});

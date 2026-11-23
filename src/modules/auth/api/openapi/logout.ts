@@ -1,7 +1,7 @@
 import { createRoute } from '@hono/zod-openapi';
 
-import { unauthorizedResponse } from '@/shared/api/openapi/errors/401.openapi';
 import { internalServerErrorResponse } from '@/shared/api/openapi/errors/500.openapi';
+import { domainUnauthorizedResponse, domainValidationResponse } from '@/shared/api/openapi/errors/domain.openapi';
 
 import { refreshTokenCookieSchema } from '../schemas/auth.requests.schema';
 import { logoutPayloadSchema } from '../schemas/auth.responses.schema';
@@ -48,7 +48,8 @@ export const logoutRoute = createRoute({
         }
       }
     },
-    ...unauthorizedResponse,
+    ...domainUnauthorizedResponse,
+    ...domainValidationResponse,
     ...internalServerErrorResponse
   }
 });

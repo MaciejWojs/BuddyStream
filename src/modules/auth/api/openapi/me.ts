@@ -2,6 +2,7 @@ import { createRoute } from '@hono/zod-openapi';
 
 import { unauthorizedResponse } from '@/shared/api/openapi/errors/401.openapi';
 import { internalServerErrorResponse } from '@/shared/api/openapi/errors/500.openapi';
+import { domainNotFoundResponse, domainValidationResponse } from '@/shared/api/openapi/errors/domain.openapi';
 
 import { accessTokenCookieSchema } from '../schemas/auth.requests.schema';
 import { mePayloadSchema } from '../schemas/auth.responses.schema';
@@ -30,6 +31,8 @@ export const meRoute = createRoute({
       }
     },
     ...unauthorizedResponse,
+    ...domainNotFoundResponse,
+    ...domainValidationResponse,
     ...internalServerErrorResponse
   }
 });

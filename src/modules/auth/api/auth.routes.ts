@@ -9,6 +9,7 @@ import { UserId } from '@/modules/users/domain/value-objects/UserId';
 import { Username } from '@/modules/users/domain/value-objects/Username';
 import { UserDao } from '@/modules/users/infrastructure/dao/User.dao';
 import { UserRepository } from '@/modules/users/infrastructure/repository/User.repository';
+import { asClientDomainError } from '@/shared/api/errors/mapDomainError';
 import { ENV } from '@/shared/types/HonoENV';
 
 import { LoginUser } from '../application/use-cases/LoginUser';
@@ -49,6 +50,13 @@ authRouter.openapi(meRoute, async (c) => {
       200
     );
   } catch (error) {
+    const domainError = asClientDomainError(error);
+    if (domainError?.status === 404) {
+      return c.json(domainError.body, 404);
+    }
+    if (domainError?.status === 422) {
+      return c.json(domainError.body, 422);
+    }
     console.error(error);
     return c.json({ message: 'Internal Server Error' as const }, 500);
   }
@@ -69,6 +77,13 @@ authRouter.openapi(registerRoute, async (c) => {
       200
     );
   } catch (error) {
+    const domainError = asClientDomainError(error);
+    if (domainError?.status === 409) {
+      return c.json(domainError.body, 409);
+    }
+    if (domainError?.status === 422) {
+      return c.json(domainError.body, 422);
+    }
     console.error(error);
     return c.json({ message: 'Internal Server Error' as const }, 500);
   }
@@ -107,6 +122,13 @@ authRouter.openapi(loginRoute, async (c) => {
       200
     );
   } catch (error) {
+    const domainError = asClientDomainError(error);
+    if (domainError?.status === 401) {
+      return c.json(domainError.body, 401);
+    }
+    if (domainError?.status === 422) {
+      return c.json(domainError.body, 422);
+    }
     console.error(error);
     return c.json({ message: 'Internal Server Error' as const }, 500);
   }
@@ -114,7 +136,6 @@ authRouter.openapi(loginRoute, async (c) => {
 
 authRouter.openapi(logoutRoute, async (c) => {
   const { refreshToken } = c.req.valid('cookie');
-  const refreshTokenHash = RefreshTokenHash.create(refreshToken);
   deleteCookie(c, 'refreshToken', {
     httpOnly: true,
     secure: true,
@@ -128,12 +149,20 @@ authRouter.openapi(logoutRoute, async (c) => {
     path: '/'
   });
   try {
+    const refreshTokenHash = RefreshTokenHash.create(refreshToken);
     const refreshTokenDao = new RefreshTokenDao(db);
     const refreshTokenRepository = new RefreshTokenRepository(refreshTokenDao);
     const command = new LogoutUser(refreshTokenRepository);
     await command.execute(refreshTokenHash);
     return c.json({ message: 'User logged out successfully' as const }, 200);
   } catch (error) {
+    const domainError = asClientDomainError(error);
+    if (domainError?.status === 401) {
+      return c.json(domainError.body, 401);
+    }
+    if (domainError?.status === 422) {
+      return c.json(domainError.body, 422);
+    }
     console.error(error);
     return c.json({ message: 'Internal Server Error' as const }, 500);
   }
