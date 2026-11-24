@@ -5,10 +5,10 @@ import { IUserRepository } from '../../domain/repositories/IUser.repository';
 import { Email } from '../../domain/value-objects/Email';
 import { UserId } from '../../domain/value-objects/UserId';
 import { Username } from '../../domain/value-objects/Username';
-import { UserDao } from '../dao/User.dao';
+import { IUserDao } from '../dao/IUser.dao';
 
 export class UserRepository implements IUserRepository {
-  constructor(private readonly userDao: UserDao) {
+  constructor(private readonly userDao: IUserDao) {
     this.userDao = userDao;
   }
 
