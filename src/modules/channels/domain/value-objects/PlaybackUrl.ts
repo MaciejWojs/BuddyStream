@@ -6,12 +6,7 @@ import { ChannelError } from '../errors/ChannelErrors';
 
 const MAX_IVS_BINDING_LENGTH = APP_CONFIG.database.limits.channels.max_ivs_binding_length;
 
-const playbackUrlSchema = z.compile(
-  z
-    .string()
-    .max(MAX_IVS_BINDING_LENGTH)
-    .check(z.url({ protocol: /^https$/ }))
-);
+const playbackUrlSchema = z.compile(z.httpUrl().max(MAX_IVS_BINDING_LENGTH));
 
 export class PlaybackUrl {
   private readonly url: string;
