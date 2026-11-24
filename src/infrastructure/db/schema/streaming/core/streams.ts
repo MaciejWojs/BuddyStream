@@ -7,6 +7,9 @@ import { timestamps, uuidv7 } from '../../utilities';
 import { channels } from './channels';
 
 const MAX_ASSETS_KEY_LENGTH = APP_CONFIG.database.limits.shared.max_assets_key_length;
+const MAX_TITLE_LENGTH = APP_CONFIG.database.limits.streams.max_title_length;
+const MAX_DESCRIPTION_LENGTH = APP_CONFIG.database.limits.streams.max_description_length;
+const MAX_EXTERNAL_REF_LENGTH = APP_CONFIG.database.limits.streams.max_external_ref_length;
 
 export const streamRecordingStatus = pgEnum('stream_recording_status', ['processing', 'ready', 'failed']);
 
@@ -17,17 +20,17 @@ export const streams = pgTable(
     channel_id: uuid()
       .notNull()
       .references(() => channels.id, { onDelete: 'restrict' }),
-    title: varchar({ length: 255 }).default('Untitled Stream').notNull(),
-    description: varchar({ length: 255 }).default('Default stream description').notNull(),
+    title: varchar({ length: MAX_TITLE_LENGTH }).default('Untitled Stream').notNull(),
+    description: varchar({ length: MAX_DESCRIPTION_LENGTH }).default('Default stream description').notNull(),
     status: text().notNull().default('ready'),
     thumbnail_key: varchar({ length: MAX_ASSETS_KEY_LENGTH }),
     thumbnail_placeholder: text(),
     likes_count: bigint({ mode: 'number' }),
-    ivs_stream_id: varchar({ length: 255 }),
-    recording_key: varchar({ length: 255 }),
+    ivs_stream_id: varchar({ length: MAX_EXTERNAL_REF_LENGTH }),
+    recording_key: varchar({ length: MAX_EXTERNAL_REF_LENGTH }),
     recording_status: streamRecordingStatus(),
     duration_ms: integer(),
-    mediaconvert_job_id: varchar({ length: 255 }),
+    mediaconvert_job_id: varchar({ length: MAX_EXTERNAL_REF_LENGTH }),
     started_at: timestamp({ withTimezone: true }),
     ended_at: timestamp({ withTimezone: true }),
     ...timestamps

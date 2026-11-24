@@ -21,6 +21,11 @@ export const databaseLimitsSchema = z.strictObject({
   channels: z.strictObject({
     max_ivs_binding_length: positiveInt
   }),
+  streams: z.strictObject({
+    max_title_length: positiveInt,
+    max_description_length: positiveInt,
+    max_external_ref_length: positiveInt
+  }),
   shared: z.strictObject({
     max_hash_length: positiveInt,
     max_assets_key_length: positiveInt

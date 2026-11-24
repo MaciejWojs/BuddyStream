@@ -34,6 +34,11 @@ export const APP_CONFIG = defineConfig({
       channels: {
         max_ivs_binding_length: 255
       },
+      streams: {
+        max_title_length: 255,
+        max_description_length: 255,
+        max_external_ref_length: 255
+      },
       shared: {
         max_hash_length: 255,
         max_assets_key_length: 100
