@@ -4,6 +4,10 @@ const chatErrorCatalog = {
   'chat.message.body.invalid': {
     kind: 'validation',
     message: 'Invalid chat message body'
+  },
+  'chat.message.deleted': {
+    kind: 'invariant',
+    message: 'Deleted chat message cannot be edited'
   }
 } as const satisfies Record<string, DomainErrorSpec>;
 
