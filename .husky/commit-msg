@@ -1,0 +1,2 @@
+echo checking conventional commit message
+bunx commitlint --edit $1
