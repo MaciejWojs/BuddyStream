@@ -3,77 +3,74 @@
 lockfile_version = 1
 
 [[tools.atlas]]
-version = "1.3.0"
+version = "1.4.0"
 backend = "aqua:ariga/atlas"
-specifiers = [
-    "1.3.0",
-    "latest",
-]
+specifiers = ["1.4.0"]
 
 [tools.atlas."platforms.linux-arm64"]
-checksum = "sha256:d2cfb1c71e58170bb4ddbe62107a38da4490f516ffa53a13abf57583819b6a40"
-url = "https://release.ariga.io/atlas/atlas-linux-arm64-v1.3.0"
+checksum = "sha256:1ca47384b3107f2fe6460be6b07216a6fbd1438b87625af6cdfe24cd8b34fd3b"
+url = "https://release.ariga.io/atlas/atlas-linux-arm64-v1.4.0"
 
 [tools.atlas."platforms.linux-arm64-musl"]
-checksum = "sha256:d2cfb1c71e58170bb4ddbe62107a38da4490f516ffa53a13abf57583819b6a40"
-url = "https://release.ariga.io/atlas/atlas-linux-arm64-v1.3.0"
+checksum = "sha256:1ca47384b3107f2fe6460be6b07216a6fbd1438b87625af6cdfe24cd8b34fd3b"
+url = "https://release.ariga.io/atlas/atlas-linux-arm64-v1.4.0"
 
 [tools.atlas."platforms.linux-x64"]
-checksum = "sha256:cfc773e5b4e845bc01d680390c174648938a7f88bf30e5a2c83ae85217c21587"
-url = "https://release.ariga.io/atlas/atlas-linux-amd64-v1.3.0"
+checksum = "sha256:cc1ee303923d27044316b0ecb7d506ffc564f52dd8f969c71646357dbad3837b"
+url = "https://release.ariga.io/atlas/atlas-linux-amd64-v1.4.0"
 
 [tools.atlas."platforms.linux-x64-musl"]
-checksum = "sha256:cfc773e5b4e845bc01d680390c174648938a7f88bf30e5a2c83ae85217c21587"
-url = "https://release.ariga.io/atlas/atlas-linux-amd64-v1.3.0"
+checksum = "sha256:cc1ee303923d27044316b0ecb7d506ffc564f52dd8f969c71646357dbad3837b"
+url = "https://release.ariga.io/atlas/atlas-linux-amd64-v1.4.0"
 
 [tools.atlas."platforms.macos-arm64"]
-checksum = "sha256:47aaf7c295c7569c7eecfcbc53f02de862846ce1fbef16f1bd8ae98b03c3c68f"
-url = "https://release.ariga.io/atlas/atlas-darwin-arm64-v1.3.0"
+checksum = "sha256:b70323b34f416fad6d675088644ed9ffee2a6d574c81ac06202a3a629d0927e0"
+url = "https://release.ariga.io/atlas/atlas-darwin-arm64-v1.4.0"
 
 [tools.atlas."platforms.macos-x64"]
-checksum = "sha256:4b4d8621332eabc3e6e7554d799a98ceef6376c4d8bbad6ed7832b49655e3480"
-url = "https://release.ariga.io/atlas/atlas-darwin-amd64-v1.3.0"
+checksum = "sha256:11f2ffbc3bb088ee8dc894b53695964f3464df5b7f693c476749599ee0be505b"
+url = "https://release.ariga.io/atlas/atlas-darwin-amd64-v1.4.0"
 
 [tools.atlas."platforms.windows-x64"]
-checksum = "sha256:19b3bf812be93d1b30d7199c5700af01002cbd606c2aec2394fd618af7e3f7b1"
-url = "https://release.ariga.io/atlas/atlas-windows-amd64-v1.3.0.exe"
+checksum = "sha256:b45055d6dc21f634c8a940a7e6967037d41910d4d7962e3e0551508c79eb18ea"
+url = "https://release.ariga.io/atlas/atlas-windows-amd64-v1.4.0.exe"
 
 [[tools.opentofu]]
-version = "1.13.2"
+version = "1.13.10"
 backend = "aqua:opentofu/opentofu"
-specifiers = ["1.13.2"]
+specifiers = ["1.13.10"]
 
 [tools.opentofu."platforms.linux-arm64"]
-checksum = "sha256:88e2d9e3f94f97b76ab2faf55ade87578f56aed19c5e45fa139d70e994366d1f"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742799"
+checksum = "sha256:9dcdabf93c5209feaa35a7bb6d41f4d71b0880c4c4dfaf275d612f5b6facc28a"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784195569"
 
 [tools.opentofu."platforms.linux-arm64-musl"]
-checksum = "sha256:88e2d9e3f94f97b76ab2faf55ade87578f56aed19c5e45fa139d70e994366d1f"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742799"
+checksum = "sha256:9dcdabf93c5209feaa35a7bb6d41f4d71b0880c4c4dfaf275d612f5b6facc28a"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784195569"
 
 [tools.opentofu."platforms.linux-x64"]
-checksum = "sha256:ac05d9952662c7db28dd57e93f0a68018837bfdf9342384ec0987977c16a9645"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742636"
+checksum = "sha256:f606b6117ee03177374806d56d580bde7b512aff69f86d2b9f3148dced4ca375"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784195222"
 
 [tools.opentofu."platforms.linux-x64-musl"]
-checksum = "sha256:ac05d9952662c7db28dd57e93f0a68018837bfdf9342384ec0987977c16a9645"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742636"
+checksum = "sha256:f606b6117ee03177374806d56d580bde7b512aff69f86d2b9f3148dced4ca375"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784195222"
 
 [tools.opentofu."platforms.macos-arm64"]
-checksum = "sha256:0d1cdc85f38992055b48e7fb161304a2ddfe2e5ee0ff68ffec9d0349c8bd1b59"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742637"
+checksum = "sha256:72d39c8492f04bb0fb1642615ad29fdfe35e6a344bd2ad425c5bc8559e7e2b61"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784193904"
 
 [tools.opentofu."platforms.macos-x64"]
-checksum = "sha256:dc6e4eb1d3ed6550c2ef052596f933dbcd8c806957665ea83ae7537147cb3074"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742982"
+checksum = "sha256:996b3a4ea0c531e4bfc6cf7d4a819417ac119b88646dbf2a855ca8e2518b575f"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784193908"
 
 [tools.opentofu."platforms.windows-x64"]
-checksum = "sha256:e74fc2bda0c81ce696b6b7016a4d5c1f557638161239e4101e9ee7d8e0faba59"
-url = "https://github.com/opentofu/opentofu/releases/download/v1.13.2/tofu_1.13.2_windows_amd64.tar.gz"
-url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/662742635"
+checksum = "sha256:943f81ab34ccf0245dc3fbf52eebbacd7fed7fec0ce5078376ffe4ec21d57f6c"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.13.10/tofu_1.13.10_windows_amd64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/784196040"
