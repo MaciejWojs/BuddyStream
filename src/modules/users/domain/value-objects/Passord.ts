@@ -1,18 +1,14 @@
 import { password as bunPassword } from 'bun';
-import { z } from 'zod';
 import zxcvbn from 'zxcvbn';
 
 import { APP_CONFIG } from '@/config/compilation-time/APP_CONFIG';
+import { passwordSchema } from '@/shared/schemas/base-types';
 
 import { UserError } from '../errors/UserErrors';
 
 const hashAlgorithm = APP_CONFIG.security.hash_algorithm;
-const MIN_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.min_password_length;
-const MAX_PASSWORD_LENGTH = APP_CONFIG.domain.limits.users.max_password_length;
 const MIN_PASSWORD_STRENGTH = APP_CONFIG.domain.limits.users.min_password_strength;
 const MAX_HASH_LENGTH = APP_CONFIG.database.limits.shared.max_hash_length;
-
-const passwordSchema = z.compile(z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH));
 
 export class Password {
   private constructor(private readonly hashedPass: string) {}
