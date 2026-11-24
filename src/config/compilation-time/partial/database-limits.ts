@@ -18,6 +18,9 @@ export const databaseLimitsSchema = z.strictObject({
     max_username_length: positiveInt,
     max_email_length: positiveInt
   }),
+  channels: z.strictObject({
+    max_ivs_binding_length: positiveInt
+  }),
   shared: z.strictObject({
     max_hash_length: positiveInt,
     max_assets_key_length: positiveInt

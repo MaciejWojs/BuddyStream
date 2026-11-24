@@ -31,6 +31,9 @@ export const APP_CONFIG = defineConfig({
         max_username_length: 100,
         max_email_length: 100
       },
+      channels: {
+        max_ivs_binding_length: 255
+      },
       shared: {
         max_hash_length: 255,
         max_assets_key_length: 100
