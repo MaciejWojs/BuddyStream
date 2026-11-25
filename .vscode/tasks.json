@@ -14,6 +14,49 @@
       }
     },
     {
+      "label": "install backend dependencies",
+      "command": "bun install --frozen-lockfile --ignore-scripts",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "check for outdated dependencies",
+      "command": "bun outdated",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "check for vulnerabilities",
+      "command": "bun audit",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": ["check for outdated dependencies"]
+    },
+    {
       "label": "cleanup",
       "command": "rm -rf dist",
       "type": "shell",
