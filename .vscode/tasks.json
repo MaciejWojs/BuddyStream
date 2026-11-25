@@ -36,8 +36,7 @@
         "runOn": "folderOpen"
       },
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "none"
       }
     },
     {
@@ -51,8 +50,7 @@
         "runOn": "folderOpen"
       },
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "none"
       },
       "dependsOn": ["check for outdated dependencies"]
     },
