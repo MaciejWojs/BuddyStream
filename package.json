@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@hono/zod-openapi": "^1.6.3",
-    "@scalar/hono-api-reference": "^0.12.25",
+    "@scalar/hono-api-reference": "^0.12.26",
     "drizzle-kit": "1.0.0-rc.6",
     "drizzle-orm": "1.0.0-rc.6",
-    "hono": "^4.13.22",
+    "hono": "^4.13.23",
     "zod": "^4.6.7",
     "zxcvbn": "^4.4.2"
   },
