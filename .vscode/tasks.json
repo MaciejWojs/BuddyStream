@@ -15,7 +15,8 @@
     },
     {
       "label": "install backend dependencies",
-      "command": "bun install --frozen-lockfile --ignore-scripts",
+      "command": "bun",
+      "args": ["install", "--frozen-lockfile", "--ignore-scripts"],
       "type": "shell",
       "presentation": {
         "reveal": "always"
@@ -27,7 +28,8 @@
     },
     {
       "label": "check for outdated dependencies",
-      "command": "bun outdated",
+      "command": "bun",
+      "args": ["outdated"],
       "type": "shell",
       "presentation": {
         "reveal": "always"
@@ -41,7 +43,8 @@
     },
     {
       "label": "check for vulnerabilities",
-      "command": "bun audit",
+      "command": "bun",
+      "args": ["audit"],
       "type": "shell",
       "presentation": {
         "reveal": "always"
